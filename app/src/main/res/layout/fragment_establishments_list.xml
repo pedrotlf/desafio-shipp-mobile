@@ -18,7 +18,7 @@
         app:iconifiedByDefault="false"
         app:searchIcon="@null"
         app:queryBackground="@android:color/transparent"
-        android:background="@drawable/edittext_background"
+        android:background="@drawable/search_view_background"
         android:inputType="textCapSentences" />
 
     <androidx.recyclerview.widget.RecyclerView

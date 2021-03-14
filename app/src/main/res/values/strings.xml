@@ -4,6 +4,10 @@
     <string name="search_establishments_title">Buscar estabelecimento</string>
     <string name="search_establishments_hint">Busca</string>
     <string name="search_establishments_empty">Nenhum estabelecimento encontrado</string>
+    <string name="search_establishments_get_details_error">Oops, algo deu errado</string>
+    <string name="search_establishments_get_details_loading">Carregando...</string>
 
     <string name="places_client_not_set">Places Client não foi inicializado. Você deve chamar setPlacesClient(context) antes de tentar realizar essa função</string>
+
+    <string name="order_description_describe_text">Descreva seu pedido</string>
 </resources>

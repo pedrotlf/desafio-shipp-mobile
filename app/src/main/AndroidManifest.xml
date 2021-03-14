@@ -16,7 +16,7 @@
         android:theme="@style/Theme.DesafioShipMobile">
         <activity android:name="br.com.pedrotlf.desafioshippmobile.MainActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustNothing|stateAlwaysHidden">
+            android:windowSoftInputMode="stateAlwaysHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
