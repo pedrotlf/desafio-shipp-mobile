@@ -55,17 +55,17 @@
                 />
 
             <TextView
-                android:id="@+id/endereco"
+                android:id="@+id/address"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textSize="12sp"
-                app:layout_constraintBottom_toTopOf="@id/bairro"
+                app:layout_constraintBottom_toTopOf="@id/city"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@id/title"
                 android:singleLine="true"/>
 
             <TextView
-                android:id="@+id/bairro"
+                android:id="@+id/city"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textSize="12sp"

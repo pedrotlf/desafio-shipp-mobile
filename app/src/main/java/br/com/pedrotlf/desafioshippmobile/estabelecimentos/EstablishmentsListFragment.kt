@@ -1,7 +1,7 @@
 package br.com.pedrotlf.desafioshippmobile.estabelecimentos
 
+import android.graphics.Bitmap
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,9 +12,21 @@ import br.com.pedrotlf.desafioshippmobile.BaseFragment
 import br.com.pedrotlf.desafioshippmobile.R
 import kotlinx.android.synthetic.main.fragment_establishments_list.*
 import org.jetbrains.anko.support.v4.act
+import org.jetbrains.anko.support.v4.indeterminateProgressDialog
+import org.jetbrains.anko.support.v4.toast
 
 class EstablishmentsListFragment: BaseFragment() {
     private var adapter: PlacesAdapter? = null
+
+    private var establishmentClicked: (String, String, String?, Bitmap?) -> Unit = { _, _, _, _->}
+
+    companion object{
+        fun getInstance(establishmentClicked: (String, String, String?, Bitmap?) -> Unit): EstablishmentsListFragment{
+            val frag = EstablishmentsListFragment()
+            frag.establishmentClicked = establishmentClicked
+            return frag
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setView(R.layout.fragment_establishments_list)
@@ -33,12 +45,23 @@ class EstablishmentsListFragment: BaseFragment() {
     }
 
     private fun configureRecyclerView() {
-        adapter = PlacesAdapter(act, establishmentsViewModel){ placeClicked ->
-            establishmentsViewModel.getPlaceDetails(placeClicked.placeId) { name, address, photoMetadata ->
-                if (!name.isNullOrBlank() && !address.isNullOrBlank()) {
-                    Log.i("AHA", "Temos o endereço -> \"$address\" e o nome -> \"$name\"")
+        adapter = PlacesAdapter(act, establishmentsViewModel){ placeId, name, address, city ->
+            val progress = indeterminateProgressDialog(getString(R.string.search_establishments_get_details_loading))
+            progress.setCancelable(false)
+            establishmentsViewModel.getPlaceDetails(placeId) { detailsName, detailsAddress, photoMetadata ->
+                if (!detailsName.isNullOrBlank() && !detailsAddress.isNullOrBlank()) {
+                    if (photoMetadata != null) {
+                        establishmentsViewModel.getPlacePhoto(photoMetadata){returnedPhoto ->
+                            progress.dismiss()
+                            establishmentClicked(name, address, city, returnedPhoto)
+                        }
+                    } else {
+                        progress.dismiss()
+                        establishmentClicked(name, address, city, null)
+                    }
                 } else {
-                    //todo erro
+                    progress.dismiss()
+                    toast(R.string.search_establishments_get_details_error)
                 }
             }
         }
