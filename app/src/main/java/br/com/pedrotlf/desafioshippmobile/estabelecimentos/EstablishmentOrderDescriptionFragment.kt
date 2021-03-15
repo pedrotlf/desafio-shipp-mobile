@@ -45,7 +45,7 @@ class EstablishmentOrderDescriptionFragment: BaseFragment() {
     }
 
     private fun applyInfo() {
-        title?.text = name
+        placeTitle?.text = name
         address?.text = addressText
         if (!cityText.isNullOrBlank()) {
             city?.visibility = View.VISIBLE
