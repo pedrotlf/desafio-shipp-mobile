@@ -1,14 +1,15 @@
 package br.com.pedrotlf.desafioshippmobile
 
-import android.graphics.Bitmap
 import android.os.Bundle
-import br.com.pedrotlf.desafioshippmobile.establishments.EstablishmentOrder
-import br.com.pedrotlf.desafioshippmobile.establishments.EstablishmentOrderDescriptionFragment
-import br.com.pedrotlf.desafioshippmobile.establishments.EstablishmentOrderPriceFragment
-import br.com.pedrotlf.desafioshippmobile.establishments.EstablishmentsListFragment
+import br.com.pedrotlf.desafioshippmobile.establishments.*
+import br.com.pedrotlf.desafioshippmobile.order.EstablishmentOrderDescriptionFragment
+import br.com.pedrotlf.desafioshippmobile.order.EstablishmentOrderPriceFragment
+import br.com.pedrotlf.desafioshippmobile.order.EstablishmentOrderResumeFragment
+import br.com.pedrotlf.desafioshippmobile.utils.BaseActivity
 import kotlinx.android.synthetic.main.activity_main.*
+import org.jetbrains.anko.indeterminateProgressDialog
 
-class MainActivity : BaseActivity() {
+class OrderActivity : BaseActivity() {
 
     private val establishmentsListFragment = EstablishmentsListFragment.getInstance {
         establishmentOrder -> establishmentClicked(establishmentOrder)
@@ -16,7 +17,12 @@ class MainActivity : BaseActivity() {
     private val establishmentOrderDescriptionFragment = EstablishmentOrderDescriptionFragment.getInstance{
         establishmentOrder -> orderDetailsConfirmClicked(establishmentOrder)
     }
-    private val establishmentOrderPriceFragment = EstablishmentOrderPriceFragment.getInstance()
+    private val establishmentOrderPriceFragment = EstablishmentOrderPriceFragment.getInstance{
+        establishmentOrder -> orderPriceConfirmClicked(establishmentOrder)
+    }
+    private val establishmentOrderResumeFragment = EstablishmentOrderResumeFragment.getInstance {
+        establishmentOrder ->
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,13 +31,11 @@ class MainActivity : BaseActivity() {
         val fragList = listOf(
                 establishmentsListFragment,
                 establishmentOrderDescriptionFragment,
-                establishmentOrderPriceFragment
+                establishmentOrderPriceFragment,
+                establishmentOrderResumeFragment
         )
-        viewPager.adapter = ViewPagerAdapter(fragList, this)
+        viewPager.adapter = OrderViewPagerAdapter(fragList, this)
         viewPager.isUserInputEnabled = false
-
-        if(checkLocationPermission())
-            requestLocationPermission()
     }
 
     private fun establishmentClicked(establishmentOrder: EstablishmentOrder) {
@@ -42,6 +46,17 @@ class MainActivity : BaseActivity() {
     private fun orderDetailsConfirmClicked(establishmentOrder: EstablishmentOrder){
         establishmentOrderPriceFragment.setInfo(establishmentOrder)
         pagerNextPage()
+    }
+
+    private fun orderPriceConfirmClicked(establishmentOrder: EstablishmentOrder){
+        val progress = indeterminateProgressDialog(R.string.establishment_order_price_confirm_loading)
+        progress.setCancelable(false)
+        orderViewModel.validateResume(establishmentOrder) { resumeResponse->
+            progress.dismiss()
+            establishmentOrder.totalPrice = resumeResponse?.totalValue
+            establishmentOrderResumeFragment.setInfo(establishmentOrder)
+            pagerNextPage()
+        }
     }
 
     private fun pagerNextPage(){

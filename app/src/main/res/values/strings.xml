@@ -1,9 +1,11 @@
 <resources>
     <string name="app_name">DesafioShippMobile</string>
+    <string name="order_base_url">https://k12xubei40.execute-api.sa-east-1.amazonaws.com/challenge/v1/</string>
 
     <string name="search_establishments_title">Buscar estabelecimento</string>
     <string name="search_establishments_hint">Busca</string>
     <string name="search_establishments_empty">Nenhum estabelecimento encontrado</string>
+    <string name="search_establishments_current_location_loading">Atualizando sua localização...</string>
     <string name="search_establishments_get_details_error">Oops, algo deu errado</string>
     <string name="search_establishments_get_details_loading">Carregando...</string>
 
@@ -13,6 +15,11 @@
     <string name="establishment_order_description_btn_next">Avançar</string>
 
     <string name="establishment_order_price_describe_text">Informe o valor estimado do pedido</string>
+    <string name="establishment_order_price_confirm_loading">Validando pedido...</string>
 
-    <string name="establishment_order_checkout_title">Confirmar pedido</string>
+    <string name="establishment_order_resume_title">Confirmar pedido</string>
+    <string name="establishment_order_resume_payment_method_label">Pagamento</string>
+    <string name="establishment_order_resume_payment_method_placeholder">A SER IMPLEMENTADO</string>
+    <string name="establishment_order_resume_payment_btn_next">Confirmar pedido</string>
+    <string name="establishment_order_resume_price_label">Valor: %1$s</string>
 </resources>

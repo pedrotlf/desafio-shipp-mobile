@@ -1,43 +1,42 @@
-package br.com.pedrotlf.desafioshippmobile.establishments
+package br.com.pedrotlf.desafioshippmobile.order
 
 import android.os.Bundle
-import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.widget.doOnTextChanged
-import br.com.pedrotlf.desafioshippmobile.BaseFragment
+import br.com.pedrotlf.desafioshippmobile.utils.BaseFragment
 import br.com.pedrotlf.desafioshippmobile.R
+import br.com.pedrotlf.desafioshippmobile.EstablishmentOrder
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
-import kotlinx.android.synthetic.main.fragment_establishment_order_description.*
-import kotlinx.android.synthetic.main.item_places.*
+import kotlinx.android.synthetic.main.fragment_establishment_order_resume.*
+import kotlinx.android.synthetic.main.item_place_order.*
 import org.jetbrains.anko.support.v4.act
+import java.lang.Exception
+import java.text.NumberFormat
 
-
-class EstablishmentOrderDescriptionFragment: BaseFragment() {
-    private var btnNextClicked: (EstablishmentOrder) -> Unit = {}
+class EstablishmentOrderResumeFragment: BaseFragment() {
+    private var btnConfirmClicked: (EstablishmentOrder) -> Unit = {}
 
     private var establishmentOrder: EstablishmentOrder? = null
-    
+
     companion object{
-        fun getInstance(btnNextClicked: (EstablishmentOrder) -> Unit): EstablishmentOrderDescriptionFragment{
-            val frag = EstablishmentOrderDescriptionFragment()
-            frag.btnNextClicked = btnNextClicked
+        fun getInstance(btnConfirmClicked: (EstablishmentOrder) -> Unit): EstablishmentOrderResumeFragment {
+            val frag = EstablishmentOrderResumeFragment()
+            frag.btnConfirmClicked = btnConfirmClicked
             return frag
         }
     }
 
     fun setInfo(establishmentOrder: EstablishmentOrder){
-        val oldEstablishmentId: String? = this.establishmentOrder?.id.apply{}
         this.establishmentOrder = establishmentOrder
-        applyInfo(oldEstablishmentId)
+        applyInfo()
     }
 
-    private fun applyInfo(oldEstablishmentId: String? = null) {
+    private fun applyInfo() {
         placeTitle?.text = establishmentOrder?.name
         address?.text = establishmentOrder?.address
         if (!establishmentOrder?.city.isNullOrBlank()) {
@@ -58,13 +57,18 @@ class EstablishmentOrderDescriptionFragment: BaseFragment() {
                     .into(image)
         }
 
-        if(oldEstablishmentId != establishmentOrder?.id) {
-            orderDetails?.setText("")
+        description.text = establishmentOrder?.orderDetails
+
+        val totalPrice = try {
+            NumberFormat.getCurrencyInstance().format(establishmentOrder?.totalPrice)
+        } catch (e: Exception){
+            0
         }
+        price.text = getString(R.string.establishment_order_resume_price_label, totalPrice)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        setView(R.layout.fragment_establishment_order_description)
+        setView(R.layout.fragment_establishment_order_resume)
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
@@ -72,14 +76,7 @@ class EstablishmentOrderDescriptionFragment: BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         btnNext.setOnClickListener {
-            if(!orderDetails.text.isNullOrBlank()) {
-                establishmentOrder?.orderDetails = orderDetails.text.toString()
-                establishmentOrder?.let { order -> btnNextClicked(order) }
-            }
-        }
 
-        orderDetails.doOnTextChanged { text, _, _, _ ->
-            btnNext.isEnabled = !text.isNullOrBlank()
         }
 
         btnBack.setOnClickListener { act.onBackPressed() }
