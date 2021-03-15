@@ -1,4 +1,4 @@
-package br.com.pedrotlf.desafioshippmobile.estabelecimentos
+package br.com.pedrotlf.desafioshippmobile.establishments
 
 import android.graphics.Bitmap
 import android.os.Bundle
@@ -18,10 +18,10 @@ import org.jetbrains.anko.support.v4.toast
 class EstablishmentsListFragment: BaseFragment() {
     private var adapter: PlacesAdapter? = null
 
-    private var establishmentClicked: (String, String, String?, Bitmap?) -> Unit = { _, _, _, _->}
+    private var establishmentClicked: (EstablishmentOrder) -> Unit = {}
 
     companion object{
-        fun getInstance(establishmentClicked: (String, String, String?, Bitmap?) -> Unit): EstablishmentsListFragment{
+        fun getInstance(establishmentClicked: (EstablishmentOrder) -> Unit): EstablishmentsListFragment{
             val frag = EstablishmentsListFragment()
             frag.establishmentClicked = establishmentClicked
             return frag
@@ -45,20 +45,21 @@ class EstablishmentsListFragment: BaseFragment() {
     }
 
     private fun configureRecyclerView() {
-        adapter = PlacesAdapter(act, establishmentsViewModel){ placeId, name, address, city, photo ->
-            if(photo == null) {
+        adapter = PlacesAdapter(act, establishmentsViewModel){ establishmentOrder ->
+            if(establishmentOrder.photo == null) {
                 val progress = indeterminateProgressDialog(getString(R.string.search_establishments_get_details_loading))
                 progress.setCancelable(false)
-                establishmentsViewModel.getPlaceDetails(placeId) { detailsName, detailsAddress, photoMetadata ->
+                establishmentsViewModel.getPlaceDetails(establishmentOrder.id) { detailsName, detailsAddress, photoMetadata ->
                     if (!detailsName.isNullOrBlank() && !detailsAddress.isNullOrBlank()) {
                         if (photoMetadata != null) {
                             establishmentsViewModel.getPlacePhoto(photoMetadata) { returnedPhoto ->
                                 progress.dismiss()
-                                establishmentClicked(name, address, city, returnedPhoto)
+                                establishmentOrder.photo = returnedPhoto
+                                establishmentClicked(establishmentOrder)
                             }
                         } else {
                             progress.dismiss()
-                            establishmentClicked(name, address, city, null)
+                            establishmentClicked(establishmentOrder)
                         }
                     } else {
                         progress.dismiss()
@@ -66,7 +67,7 @@ class EstablishmentsListFragment: BaseFragment() {
                     }
                 }
             } else {
-                establishmentClicked(name, address, city, photo)
+                establishmentClicked(establishmentOrder)
             }
         }
 

@@ -1,4 +1,4 @@
-package br.com.pedrotlf.desafioshippmobile.estabelecimentos
+package br.com.pedrotlf.desafioshippmobile.establishments
 
 import android.graphics.Bitmap
 import android.util.TypedValue
@@ -21,7 +21,7 @@ import kotlinx.android.synthetic.main.item_places.view.*
 class PlacesAdapter(
     val context: FragmentActivity,
     val establishmentsViewModel: EstablishmentsViewModel,
-    val onPlaceClicked: (String, String, String, String?, Bitmap?) -> Unit
+    val onPlaceClicked: (EstablishmentOrder) -> Unit
 ) : RecyclerView.Adapter<PlacesAdapter.PlacesViewHolder>() {
 
     var places: List<AutocompletePrediction> = listOf()
@@ -84,6 +84,6 @@ class PlacesAdapter(
                 }
         }
 
-        holder.card?.setOnClickListener { onPlaceClicked(place.placeId, name.toString(), endereco, bairro, holder.photo) }
+        holder.card?.setOnClickListener { onPlaceClicked(EstablishmentOrder(place.placeId, name.toString(), endereco, bairro, holder.photo)) }
     }
 }
