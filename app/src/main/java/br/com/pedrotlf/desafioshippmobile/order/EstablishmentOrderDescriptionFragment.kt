@@ -70,6 +70,8 @@ class EstablishmentOrderDescriptionFragment: BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        if(!fragmentNeedsReloading)
+            return
 
         btnNext.setOnClickListener {
             if(!orderDetails.text.isNullOrBlank()) {
@@ -85,5 +87,7 @@ class EstablishmentOrderDescriptionFragment: BaseFragment() {
         btnBack.setOnClickListener { act.onBackPressed() }
 
         applyInfo()
+
+        fragmentNeedsReloading = false
     }
 }

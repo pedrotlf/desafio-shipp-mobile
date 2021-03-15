@@ -22,4 +22,7 @@
     <string name="establishment_order_resume_payment_method_placeholder">A SER IMPLEMENTADO</string>
     <string name="establishment_order_resume_payment_btn_next">Confirmar pedido</string>
     <string name="establishment_order_resume_price_label">Valor: %1$s</string>
+
+    <string name="establishment_order_success_title">Pedido confirmado!</string>
+    <string name="establishment_order_success_btn_confirm">Ok</string>
 </resources>

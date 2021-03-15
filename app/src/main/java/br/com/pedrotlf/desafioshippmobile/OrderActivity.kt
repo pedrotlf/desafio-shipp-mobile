@@ -5,6 +5,7 @@ import br.com.pedrotlf.desafioshippmobile.establishments.*
 import br.com.pedrotlf.desafioshippmobile.order.EstablishmentOrderDescriptionFragment
 import br.com.pedrotlf.desafioshippmobile.order.EstablishmentOrderPriceFragment
 import br.com.pedrotlf.desafioshippmobile.order.EstablishmentOrderResumeFragment
+import br.com.pedrotlf.desafioshippmobile.order.OrderSuccessFragment
 import br.com.pedrotlf.desafioshippmobile.utils.BaseActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.indeterminateProgressDialog
@@ -21,7 +22,10 @@ class OrderActivity : BaseActivity() {
         establishmentOrder -> orderPriceConfirmClicked(establishmentOrder)
     }
     private val establishmentOrderResumeFragment = EstablishmentOrderResumeFragment.getInstance {
-        establishmentOrder ->
+        establishmentOrder -> orderResumeConfirmClicked(establishmentOrder)
+    }
+    private val orderSuccessFragment = OrderSuccessFragment.getInstance {
+            onBackPressed()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,7 +36,8 @@ class OrderActivity : BaseActivity() {
                 establishmentsListFragment,
                 establishmentOrderDescriptionFragment,
                 establishmentOrderPriceFragment,
-                establishmentOrderResumeFragment
+                establishmentOrderResumeFragment,
+                orderSuccessFragment
         )
         viewPager.adapter = OrderViewPagerAdapter(fragList, this)
         viewPager.isUserInputEnabled = false
@@ -59,6 +64,18 @@ class OrderActivity : BaseActivity() {
         }
     }
 
+    private fun orderResumeConfirmClicked(establishmentOrder: EstablishmentOrder){
+        val progress = indeterminateProgressDialog(R.string.establishment_order_price_confirm_loading)
+        progress.setCancelable(false)
+        orderViewModel.checkout(establishmentOrder) { checkoutResponse ->
+            progress.dismiss()
+            establishmentOrder.totalPrice = checkoutResponse?.value
+            val successMessage = checkoutResponse?.message
+            orderSuccessFragment.setInfo(establishmentOrder)
+            pagerNextPage()
+        }
+    }
+
     private fun pagerNextPage(){
         val currPos: Int = viewPager.currentItem
         if ((currPos + 1) != viewPager.adapter?.itemCount) {
@@ -76,7 +93,10 @@ class OrderActivity : BaseActivity() {
     }
 
     override fun onBackPressed() {
-        if(!pagerPreviousPage())
+        if(viewPager.currentItem + 1 == viewPager.adapter?.itemCount) {
+            establishmentsListFragment.fragmentNeedsReloading = true
+            viewPager.currentItem = 0
+        }else if(!pagerPreviousPage())
             super.onBackPressed()
     }
 }

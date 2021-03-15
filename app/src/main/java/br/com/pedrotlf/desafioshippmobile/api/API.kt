@@ -15,7 +15,11 @@ interface API {
 
     @Headers("Accept: application/json")
     @POST("order/resume")
-    fun postResume(@Body token: ResumeRequest): Call<ResumeResponse>
+    fun postResume(@Body requestBody: OrderRequest): Call<ResumeResponse>
+
+    @Headers("Accept: application/json")
+    @POST("order")
+    fun checkout(@Body requestBody: OrderRequest): Call<CheckoutResponse>
 
     companion object {
         fun create(urlBase: String): API {

@@ -20,6 +20,12 @@ open class BaseFragment: Fragment() {
     val TAG: String
         get() = this.javaClass.simpleName
 
+    /**
+     * ATENÇÃO! Por padrão, uma classe BaseFragment sempre fará um "RELOAD". Para desativar, basta
+     * inicializar seu fragment já setando essa variável para FALSE.
+     * */
+    var fragmentNeedsReloading: Boolean = true
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         establishmentsViewModel = ViewModelProvider.AndroidViewModelFactory(act.application).create(EstablishmentsViewModel::class.java)
@@ -27,7 +33,7 @@ open class BaseFragment: Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        if (rootView == null) {
+        if (rootView == null || fragmentNeedsReloading) {
             rootView = inflater.inflate(layoutId, container, false)
         } else {
             val parent = rootView?.parent
