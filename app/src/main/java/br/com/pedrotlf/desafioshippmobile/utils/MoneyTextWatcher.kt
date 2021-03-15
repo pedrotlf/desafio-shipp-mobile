@@ -1,4 +1,4 @@
-package br.com.pedrotlf.desafioshippmobile.establishments
+package br.com.pedrotlf.desafioshippmobile.utils
 
 import android.text.Editable
 import android.text.TextWatcher

@@ -1,14 +1,14 @@
 package br.com.pedrotlf.desafioshippmobile.establishments
 
-import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
-import br.com.pedrotlf.desafioshippmobile.BaseActivity
-import br.com.pedrotlf.desafioshippmobile.BaseFragment
+import br.com.pedrotlf.desafioshippmobile.EstablishmentOrder
+import br.com.pedrotlf.desafioshippmobile.utils.BaseActivity
+import br.com.pedrotlf.desafioshippmobile.utils.BaseFragment
 import br.com.pedrotlf.desafioshippmobile.R
 import kotlinx.android.synthetic.main.fragment_establishments_list.*
 import org.jetbrains.anko.support.v4.act
@@ -37,20 +37,35 @@ class EstablishmentsListFragment: BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         establishmentsViewModel.setPlacesClient(act)
-        if((act as BaseActivity).checkLocationPermission())
-            establishmentsViewModel.updateCurrentlyLocation(act)
 
         configureRecyclerView()
         configureSearchView()
     }
 
+    override fun onResume() {
+        super.onResume()
+        if((act as BaseActivity).checkLocationPermission()) {
+            val progress = indeterminateProgressDialog(R.string.search_establishments_current_location_loading)
+            progress.setCancelable(false)
+            establishmentsViewModel.updateCurrentLocation(act){progress.dismiss()}
+        }else{
+            (act as BaseActivity).requestLocationPermission{
+                val progress = indeterminateProgressDialog(R.string.search_establishments_current_location_loading)
+                progress.setCancelable(false)
+                establishmentsViewModel.updateCurrentLocation(act){
+                    progress.dismiss()
+                }
+            }
+        }
+    }
+
     private fun configureRecyclerView() {
         adapter = PlacesAdapter(act, establishmentsViewModel){ establishmentOrder ->
-            if(establishmentOrder.photo == null) {
+            if(establishmentOrder.photo == null || establishmentOrder.latLng == null) {
                 val progress = indeterminateProgressDialog(getString(R.string.search_establishments_get_details_loading))
                 progress.setCancelable(false)
-                establishmentsViewModel.getPlaceDetails(establishmentOrder.id) { detailsName, detailsAddress, photoMetadata ->
-                    if (!detailsName.isNullOrBlank() && !detailsAddress.isNullOrBlank()) {
+                establishmentsViewModel.getPlaceDetails(establishmentOrder.id) { latLng, photoMetadata ->
+                    if (latLng != null) {
                         if (photoMetadata != null) {
                             establishmentsViewModel.getPlacePhoto(photoMetadata) { returnedPhoto ->
                                 progress.dismiss()

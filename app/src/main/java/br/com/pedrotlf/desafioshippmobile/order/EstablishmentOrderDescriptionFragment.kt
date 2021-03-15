@@ -1,38 +1,43 @@
-package br.com.pedrotlf.desafioshippmobile.establishments
+package br.com.pedrotlf.desafioshippmobile.order
 
-import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import br.com.pedrotlf.desafioshippmobile.BaseFragment
+import androidx.core.widget.doOnTextChanged
+import br.com.pedrotlf.desafioshippmobile.utils.BaseFragment
 import br.com.pedrotlf.desafioshippmobile.R
+import br.com.pedrotlf.desafioshippmobile.EstablishmentOrder
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
-import kotlinx.android.synthetic.main.fragment_establishment_order_price.*
+import kotlinx.android.synthetic.main.fragment_establishment_order_description.*
 import kotlinx.android.synthetic.main.item_places.*
 import org.jetbrains.anko.support.v4.act
 
-class EstablishmentOrderPriceFragment: BaseFragment() {
+
+class EstablishmentOrderDescriptionFragment: BaseFragment() {
+    private var btnNextClicked: (EstablishmentOrder) -> Unit = {}
+
     private var establishmentOrder: EstablishmentOrder? = null
-
-
+    
     companion object{
-        fun getInstance(): EstablishmentOrderPriceFragment{
-            val frag = EstablishmentOrderPriceFragment()
+        fun getInstance(btnNextClicked: (EstablishmentOrder) -> Unit): EstablishmentOrderDescriptionFragment {
+            val frag = EstablishmentOrderDescriptionFragment()
+            frag.btnNextClicked = btnNextClicked
             return frag
         }
     }
 
     fun setInfo(establishmentOrder: EstablishmentOrder){
+        val oldEstablishmentId: String? = this.establishmentOrder?.id.apply{}
         this.establishmentOrder = establishmentOrder
-        applyInfo()
+        applyInfo(oldEstablishmentId)
     }
 
-    private fun applyInfo() {
+    private fun applyInfo(oldEstablishmentId: String? = null) {
         placeTitle?.text = establishmentOrder?.name
         address?.text = establishmentOrder?.address
         if (!establishmentOrder?.city.isNullOrBlank()) {
@@ -52,23 +57,30 @@ class EstablishmentOrderPriceFragment: BaseFragment() {
                     .apply(RequestOptions().transform(CenterCrop(), RoundedCorners(px)))
                     .into(image)
         }
-        description.visibility = View.VISIBLE
-        description.text = establishmentOrder?.orderDetails
 
-        inputPrice.setText("0")
+        if(oldEstablishmentId != establishmentOrder?.id) {
+            orderDetails?.setText("")
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        setView(R.layout.fragment_establishment_order_price)
+        setView(R.layout.fragment_establishment_order_description)
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        inputPrice.addTextChangedListener(MoneyTextWatcher(inputPrice){isNonZero ->
-            btnNext.isEnabled = isNonZero
-        })
+        btnNext.setOnClickListener {
+            if(!orderDetails.text.isNullOrBlank()) {
+                establishmentOrder?.orderDetails = orderDetails.text.toString()
+                establishmentOrder?.let { order -> btnNextClicked(order) }
+            }
+        }
+
+        orderDetails.doOnTextChanged { text, _, _, _ ->
+            btnNext.isEnabled = !text.isNullOrBlank()
+        }
 
         btnBack.setOnClickListener { act.onBackPressed() }
 

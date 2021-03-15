@@ -42,7 +42,7 @@
 
     <EditText
         android:id="@+id/orderDetails"
-        style="@style/editTextStyle"
+        style="@style/EditTextStyle"
         android:gravity="start|top"
         android:inputType="textCapSentences|textMultiLine"
         android:layout_width="match_parent"
@@ -64,7 +64,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/btnNext"
         app:srcCompat="?attr/homeAsUpIndicator"
-        app:tint="@color/yellow" />
+        app:tint="@color/colorPrimary" />
 
     <TextView
         android:id="@+id/btnNext"
