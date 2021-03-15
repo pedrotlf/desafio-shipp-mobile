@@ -19,6 +19,7 @@ import com.bumptech.glide.request.RequestOptions
 import kotlinx.android.synthetic.main.fragment_establishment_order_price.*
 import kotlinx.android.synthetic.main.item_places.*
 import org.jetbrains.anko.support.v4.act
+import java.text.NumberFormat
 
 
 class EstablishmentOrderPriceFragment: BaseFragment() {
@@ -78,7 +79,7 @@ class EstablishmentOrderPriceFragment: BaseFragment() {
         })
 
         btnNext.setOnClickListener {
-            establishmentOrder?.price = inputPrice.text.toString()
+            establishmentOrder?.price = NumberFormat.getCurrencyInstance().parse(inputPrice.text.toString())?.toDouble()
             val focusedView = act.currentFocus
             focusedView?.clearFocus()
             if (focusedView != null) {

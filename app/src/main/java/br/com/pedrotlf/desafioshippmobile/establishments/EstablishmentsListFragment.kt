@@ -1,6 +1,7 @@
 package br.com.pedrotlf.desafioshippmobile.establishments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,7 @@ import br.com.pedrotlf.desafioshippmobile.utils.BaseActivity
 import br.com.pedrotlf.desafioshippmobile.utils.BaseFragment
 import br.com.pedrotlf.desafioshippmobile.R
 import kotlinx.android.synthetic.main.fragment_establishments_list.*
+import org.jetbrains.anko.appcompat.v7.coroutines.onClose
 import org.jetbrains.anko.support.v4.act
 import org.jetbrains.anko.support.v4.indeterminateProgressDialog
 import org.jetbrains.anko.support.v4.toast
@@ -36,14 +38,14 @@ class EstablishmentsListFragment: BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        if(!fragmentNeedsReloading)
+            return
+
         establishmentsViewModel.setPlacesClient(act)
 
         configureRecyclerView()
         configureSearchView()
-    }
 
-    override fun onResume() {
-        super.onResume()
         if((act as BaseActivity).checkLocationPermission()) {
             val progress = indeterminateProgressDialog(R.string.search_establishments_current_location_loading)
             progress.setCancelable(false)
@@ -57,6 +59,15 @@ class EstablishmentsListFragment: BaseFragment() {
                 }
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if(fragmentNeedsReloading) {
+            search?.setQuery("", false)
+            search?.isIconified = true
+        }
+        fragmentNeedsReloading = false
     }
 
     private fun configureRecyclerView() {
@@ -122,6 +133,7 @@ class EstablishmentsListFragment: BaseFragment() {
                 if (newText.isNullOrBlank()) {
                     recyclerPlaces.visibility = View.GONE
                     placesEmpty.visibility = View.GONE
+                    Log.i("weird", "hahaha")
                 }
                 return false
             }

@@ -5,27 +5,25 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import br.com.pedrotlf.desafioshippmobile.utils.BaseFragment
-import br.com.pedrotlf.desafioshippmobile.R
 import br.com.pedrotlf.desafioshippmobile.EstablishmentOrder
+import br.com.pedrotlf.desafioshippmobile.R
+import br.com.pedrotlf.desafioshippmobile.utils.BaseFragment
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
-import kotlinx.android.synthetic.main.fragment_establishment_order_resume.*
+import kotlinx.android.synthetic.main.fragment_order_success.*
 import kotlinx.android.synthetic.main.item_place_order.*
-import org.jetbrains.anko.support.v4.act
-import java.lang.Exception
 import java.text.NumberFormat
 
-class EstablishmentOrderResumeFragment: BaseFragment() {
-    private var btnConfirmClicked: (EstablishmentOrder) -> Unit = {}
+class OrderSuccessFragment: BaseFragment() {
+    private var btnConfirmClicked: () -> Unit = {}
 
     private var establishmentOrder: EstablishmentOrder? = null
 
     companion object{
-        fun getInstance(btnConfirmClicked: (EstablishmentOrder) -> Unit): EstablishmentOrderResumeFragment {
-            val frag = EstablishmentOrderResumeFragment()
+        fun getInstance(btnConfirmClicked: () -> Unit): OrderSuccessFragment {
+            val frag = OrderSuccessFragment()
             frag.btnConfirmClicked = btnConfirmClicked
             return frag
         }
@@ -48,13 +46,13 @@ class EstablishmentOrderResumeFragment: BaseFragment() {
         if (image != null) {
             val dip = 5f
             val px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                    dip,
-                    act.resources.displayMetrics
+                dip,
+                resources.displayMetrics
             ).toInt()
-            Glide.with(act)
-                    .load(establishmentOrder?.photo)
-                    .apply(RequestOptions().transform(CenterCrop(), RoundedCorners(px)))
-                    .into(image)
+            Glide.with(this)
+                .load(establishmentOrder?.photo)
+                .apply(RequestOptions().transform(CenterCrop(), RoundedCorners(px)))
+                .into(image)
         }
 
         description.text = establishmentOrder?.orderDetails
@@ -68,7 +66,7 @@ class EstablishmentOrderResumeFragment: BaseFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        setView(R.layout.fragment_establishment_order_resume)
+        setView(R.layout.fragment_order_success)
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
@@ -76,10 +74,8 @@ class EstablishmentOrderResumeFragment: BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         btnNext.setOnClickListener {
-            establishmentOrder?.let { order -> btnConfirmClicked(order) }
+            btnConfirmClicked()
         }
-
-        btnBack.setOnClickListener { act.onBackPressed() }
 
         applyInfo()
     }
