@@ -30,14 +30,14 @@ class PlacesAdapter(
             notifyDataSetChanged()
         }
 
-    var photo: Bitmap? = null
-
     class PlacesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val card: CardView? = itemView.card
-        val titulo: TextView? = itemView.title
+        val titulo: TextView? = itemView.placeTitle
         val endereco: TextView? = itemView.address
         val bairro: TextView? = itemView.city
         val imagem: ImageView? = itemView.image
+
+        var photo: Bitmap? = null
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlacesViewHolder =
@@ -64,6 +64,8 @@ class PlacesAdapter(
             null
         }
 
+        holder.imagem?.setImageDrawable(null)
+        holder.photo = null
         establishmentsViewModel.getPlaceDetails(place.placeId){_,_,photoMetadata ->
             if(photoMetadata != null)
                 establishmentsViewModel.getPlacePhoto(photoMetadata){photoBitmap ->
@@ -73,7 +75,7 @@ class PlacesAdapter(
                             dip,
                             context.resources.displayMetrics
                         ).toInt()
-                        photo = photoBitmap
+                        holder.photo = photoBitmap
                         Glide.with(context)
                             .load(photoBitmap)
                             .apply(RequestOptions().transform(CenterCrop(), RoundedCorners(px)))
@@ -82,6 +84,6 @@ class PlacesAdapter(
                 }
         }
 
-        holder.card?.setOnClickListener { onPlaceClicked(place.placeId, name.toString(), endereco, bairro, photo) }
+        holder.card?.setOnClickListener { onPlaceClicked(place.placeId, name.toString(), endereco, bairro, holder.photo) }
     }
 }
