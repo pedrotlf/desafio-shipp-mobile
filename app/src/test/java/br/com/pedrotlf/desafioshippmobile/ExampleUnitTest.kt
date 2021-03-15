@@ -1,4 +1,4 @@
-package br.com.pedrotlf.desafioshipmobile
+package br.com.pedrotlf.desafioshippmobile
 
 import org.junit.Test
 
