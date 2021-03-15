@@ -1,5 +1,6 @@
 package br.com.pedrotlf.desafioshippmobile.estabelecimentos
 
+import android.graphics.Bitmap
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -20,7 +21,7 @@ import kotlinx.android.synthetic.main.item_places.view.*
 class PlacesAdapter(
     val context: FragmentActivity,
     val establishmentsViewModel: EstablishmentsViewModel,
-    val onPlaceClicked: (String, String, String, String?) -> Unit
+    val onPlaceClicked: (String, String, String, String?, Bitmap?) -> Unit
 ) : RecyclerView.Adapter<PlacesAdapter.PlacesViewHolder>() {
 
     var places: List<AutocompletePrediction> = listOf()
@@ -28,6 +29,8 @@ class PlacesAdapter(
             field = value
             notifyDataSetChanged()
         }
+
+    var photo: Bitmap? = null
 
     class PlacesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val card: CardView? = itemView.card
@@ -70,6 +73,7 @@ class PlacesAdapter(
                             dip,
                             context.resources.displayMetrics
                         ).toInt()
+                        photo = photoBitmap
                         Glide.with(context)
                             .load(photoBitmap)
                             .apply(RequestOptions().transform(CenterCrop(), RoundedCorners(px)))
@@ -78,6 +82,6 @@ class PlacesAdapter(
                 }
         }
 
-        holder.card?.setOnClickListener { onPlaceClicked(place.placeId, name.toString(), endereco, bairro) }
+        holder.card?.setOnClickListener { onPlaceClicked(place.placeId, name.toString(), endereco, bairro, photo) }
     }
 }

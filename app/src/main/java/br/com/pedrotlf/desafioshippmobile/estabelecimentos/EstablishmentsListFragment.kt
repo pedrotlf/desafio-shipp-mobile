@@ -45,24 +45,28 @@ class EstablishmentsListFragment: BaseFragment() {
     }
 
     private fun configureRecyclerView() {
-        adapter = PlacesAdapter(act, establishmentsViewModel){ placeId, name, address, city ->
-            val progress = indeterminateProgressDialog(getString(R.string.search_establishments_get_details_loading))
-            progress.setCancelable(false)
-            establishmentsViewModel.getPlaceDetails(placeId) { detailsName, detailsAddress, photoMetadata ->
-                if (!detailsName.isNullOrBlank() && !detailsAddress.isNullOrBlank()) {
-                    if (photoMetadata != null) {
-                        establishmentsViewModel.getPlacePhoto(photoMetadata){returnedPhoto ->
+        adapter = PlacesAdapter(act, establishmentsViewModel){ placeId, name, address, city, photo ->
+            if(photo == null) {
+                val progress = indeterminateProgressDialog(getString(R.string.search_establishments_get_details_loading))
+                progress.setCancelable(false)
+                establishmentsViewModel.getPlaceDetails(placeId) { detailsName, detailsAddress, photoMetadata ->
+                    if (!detailsName.isNullOrBlank() && !detailsAddress.isNullOrBlank()) {
+                        if (photoMetadata != null) {
+                            establishmentsViewModel.getPlacePhoto(photoMetadata) { returnedPhoto ->
+                                progress.dismiss()
+                                establishmentClicked(name, address, city, returnedPhoto)
+                            }
+                        } else {
                             progress.dismiss()
-                            establishmentClicked(name, address, city, returnedPhoto)
+                            establishmentClicked(name, address, city, null)
                         }
                     } else {
                         progress.dismiss()
-                        establishmentClicked(name, address, city, null)
+                        toast(R.string.search_establishments_get_details_error)
                     }
-                } else {
-                    progress.dismiss()
-                    toast(R.string.search_establishments_get_details_error)
                 }
+            } else {
+                establishmentClicked(name, address, city, photo)
             }
         }
 
