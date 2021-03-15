@@ -1,15 +1,13 @@
-package br.com.pedrotlf.desafioshippmobile.estabelecimentos
+package br.com.pedrotlf.desafioshippmobile.establishments
 
 import android.app.Application
 import android.content.Context
-import android.content.res.Resources
 import android.graphics.Bitmap
 import androidx.annotation.RequiresPermission
 import androidx.lifecycle.AndroidViewModel
 import br.com.pedrotlf.desafioshippmobile.BuildConfig
 import br.com.pedrotlf.desafioshippmobile.R
 import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.*
 import com.google.android.libraries.places.api.net.*
