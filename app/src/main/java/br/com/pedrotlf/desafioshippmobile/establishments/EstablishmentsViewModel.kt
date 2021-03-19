@@ -5,6 +5,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import androidx.annotation.RequiresPermission
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import br.com.pedrotlf.desafioshippmobile.BuildConfig
 import br.com.pedrotlf.desafioshippmobile.R
 import br.com.pedrotlf.desafioshippmobile.utils.MyLatLng
@@ -16,29 +17,24 @@ import com.google.android.libraries.places.api.model.*
 import com.google.android.libraries.places.api.net.*
 import java.lang.IllegalArgumentException
 
-class EstablishmentsViewModel(application: Application) : AndroidViewModel(application) {
-    private val prefs = Prefs(application)
 
-    private var placesClient: PlacesClient? = null
-    private var autocompleteSessionToken: AutocompleteSessionToken? = null
+class EstablishmentsViewModel : ViewModel() {
+//    private val prefs = Prefs(application)
 
-    fun setPlacesClient(context: Context){
-        Places.initialize(context, BuildConfig.PLACES_KEY)
-        placesClient = Places.createClient(context)
-        autocompleteSessionToken = AutocompleteSessionToken.newInstance()
-    }
+    private var currentLocation: MyLatLng? = null
+    private var autocompleteSessionToken: AutocompleteSessionToken = AutocompleteSessionToken.newInstance()
 
     @RequiresPermission(allOf = ["android.permission.ACCESS_FINE_LOCATION", "android.permission.ACCESS_WIFI_STATE"])
-    fun updateCurrentLocation(context: Context, callback: (Boolean)->Unit){
+    fun updateCurrentLocation(placesClient: PlacesClient, callback: (Boolean)->Unit){
         val placeFields: List<Place.Field> = listOf(Place.Field.LAT_LNG)
         val request: FindCurrentPlaceRequest = FindCurrentPlaceRequest.newInstance(placeFields)
 
-        placesClient?.findCurrentPlace(request)?.addOnCompleteListener { task ->
+        placesClient.findCurrentPlace(request).addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 val response = task.result
                 val closestResult = response?.placeLikelihoods?.get(0)?.place?.latLng
                 if(closestResult != null) {
-                    prefs.currentLocation = MyLatLng(closestResult)
+                    currentLocation = MyLatLng(closestResult)
                     callback(true)
                 } else
                     callback(false)
@@ -46,43 +42,37 @@ class EstablishmentsViewModel(application: Application) : AndroidViewModel(appli
                 val exception = task.exception
                 if (exception is ApiException) {
                     exception.printStackTrace()
-                    updateCurrentLocation(context, callback)
+                    updateCurrentLocation(placesClient, callback)
                 }
                 callback(false)
             }
         }
     }
 
-    fun getPlaceDetails(placeId: String, callback: (LatLng?, PhotoMetadata?)->Unit){
-        if(placesClient != null) {
-            placesClient?.fetchPlace(
-                FetchPlaceRequest.newInstance(
-                    placeId,
-                    listOf(Place.Field.LAT_LNG, Place.Field.PHOTO_METADATAS)
-                )
-            )?.addOnSuccessListener { response ->
-                val latLng = response.place.latLng
-                val photoMetadata = if (response.place.photoMetadatas.isNullOrEmpty()) null else response.place.photoMetadatas?.get(0)
-                if (latLng != null) {
-                    callback(latLng, photoMetadata)
-                }else{
-                    callback(null, null)
-                }
+    fun getPlaceDetails(placesClient: PlacesClient, placeId: String, callback: (LatLng?, PhotoMetadata?)->Unit){
+        placesClient.fetchPlace(
+            FetchPlaceRequest.newInstance(
+                placeId,
+                listOf(Place.Field.LAT_LNG, Place.Field.PHOTO_METADATAS)
+            )
+        ).addOnSuccessListener { response ->
+            val latLng = response.place.latLng
+            val photoMetadata = if (response.place.photoMetadatas.isNullOrEmpty()) null else response.place.photoMetadatas?.get(0)
+            if (latLng != null) {
+                callback(latLng, photoMetadata)
+            }else{
+                callback(null, null)
             }
-        }else{
-            val exception = Exception(getApplication<Application>().getString(R.string.places_client_not_set))
-            exception.printStackTrace()
-            callback(null, null)
         }
     }
 
-    fun getPlacePhoto(metadata: PhotoMetadata, callback: (Bitmap?) -> Unit){
+    fun getPlacePhoto(placesClient: PlacesClient, metadata: PhotoMetadata, callback: (Bitmap?) -> Unit){
         val request = FetchPhotoRequest.builder(metadata).build()
-        placesClient?.fetchPhoto(request)
-            ?.addOnSuccessListener { fetchPhotoResponse: FetchPhotoResponse ->
+        placesClient.fetchPhoto(request)
+            .addOnSuccessListener { fetchPhotoResponse: FetchPhotoResponse ->
                 val bitmap = fetchPhotoResponse.bitmap
                 callback(bitmap)
-            }?.addOnFailureListener { exception: Exception ->
+            }.addOnFailureListener { exception: Exception ->
                 if (exception is ApiException) {
                     exception.printStackTrace()
                     callback(null)
@@ -90,8 +80,8 @@ class EstablishmentsViewModel(application: Application) : AndroidViewModel(appli
             }
     }
 
-    fun getPlacesPredictions(query: String, callback: (List<AutocompletePrediction>?) -> Unit){
-        val bounds = prefs.currentLocation?.let {
+    fun getPlacesPredictions(placesClient: PlacesClient, query: String, callback: (List<AutocompletePrediction>?) -> Unit){
+        val bounds = currentLocation?.let {
             RectangularBounds.newInstance(LatLng(it.latitude, it.longitude), LatLng(it.latitude, it.longitude))
         }
         val request = FindAutocompletePredictionsRequest.builder()
@@ -100,15 +90,15 @@ class EstablishmentsViewModel(application: Application) : AndroidViewModel(appli
             .setSessionToken(autocompleteSessionToken)
             .setQuery(query)
             .build()
-        placesClient?.findAutocompletePredictions(request)
-            ?.addOnSuccessListener { response ->
+        placesClient.findAutocompletePredictions(request)
+            .addOnSuccessListener { response ->
                 callback(response.autocompletePredictions)
             }
-            ?.addOnFailureListener {
+            .addOnFailureListener {
                 it.printStackTrace()
                 callback(null)
             }
-            ?.addOnCanceledListener {
+            .addOnCanceledListener {
                 callback(null)
             }
     }
