@@ -1,4 +1,4 @@
-package br.com.pedrotlf.desafioshippmobile.order
+package br.com.pedrotlf.desafioshippmobile.ui.establishment
 
 import android.content.Context
 import android.os.Bundle
@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import androidx.core.content.ContextCompat.getSystemService
 import br.com.pedrotlf.desafioshippmobile.EstablishmentOrder
 import br.com.pedrotlf.desafioshippmobile.R
 import br.com.pedrotlf.desafioshippmobile.utils.BaseFragment

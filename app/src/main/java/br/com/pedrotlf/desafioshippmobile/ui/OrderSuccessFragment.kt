@@ -1,4 +1,4 @@
-package br.com.pedrotlf.desafioshippmobile.order
+package br.com.pedrotlf.desafioshippmobile.ui
 
 import android.os.Bundle
 import android.util.TypedValue

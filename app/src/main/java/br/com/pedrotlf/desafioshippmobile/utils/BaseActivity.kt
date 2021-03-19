@@ -21,12 +21,6 @@ open class BaseActivity: AppCompatActivity() {
     lateinit var establishmentsViewModel: EstablishmentsViewModel
     lateinit var orderViewModel: OrderViewModel
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        establishmentsViewModel = ViewModelProvider.AndroidViewModelFactory(application).create(EstablishmentsViewModel::class.java)
-        orderViewModel = ViewModelProvider.AndroidViewModelFactory(application).create(OrderViewModel::class.java)
-    }
-
     fun requestLocationPermission(callback: (()->Unit)? = {}){
         if (callback != null) {
             onLocationPermissionCallback = callback
