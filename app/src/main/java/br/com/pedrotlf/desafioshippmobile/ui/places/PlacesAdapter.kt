@@ -1,16 +1,17 @@
-package br.com.pedrotlf.desafioshippmobile.establishments
+package br.com.pedrotlf.desafioshippmobile.ui.places
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import br.com.pedrotlf.desafioshippmobile.EstablishmentOrder
+import br.com.pedrotlf.desafioshippmobile.data.Order
+import br.com.pedrotlf.desafioshippmobile.data.Place
 import br.com.pedrotlf.desafioshippmobile.databinding.ItemPlacesBinding
+import br.com.pedrotlf.desafioshippmobile.utils.dipFromPixels
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -22,7 +23,7 @@ import kotlinx.android.synthetic.main.item_places.view.*
 class PlacesAdapter(
     val context: Context,
     val updateDetails: (String, (LatLng?, Bitmap?)->Unit) -> Unit,
-    val onPlaceClicked: (EstablishmentOrder) -> Unit
+    val onPlaceClicked: (Place) -> Unit
 ) : ListAdapter<AutocompletePrediction, PlacesAdapter.PlacesViewHolder>(DiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlacesViewHolder {
@@ -40,7 +41,7 @@ class PlacesAdapter(
         private var id: String? = null
         private var latLng: LatLng? = null
 
-        fun bind(context: Context, place: AutocompletePrediction, updateDetails: (String, (LatLng?, Bitmap?)->Unit) -> Unit, onPlaceClicked: (EstablishmentOrder) -> Unit){
+        fun bind(context: Context, place: AutocompletePrediction, updateDetails: (String, (LatLng?, Bitmap?)->Unit) -> Unit, onPlaceClicked: (Place) -> Unit){
             binding.apply {
                 val name = place.getPrimaryText(null)
                 placeTitle.text = name
@@ -68,19 +69,17 @@ class PlacesAdapter(
                     }
                 }
 
-                card.setOnClickListener { onPlaceClicked(EstablishmentOrder(place.placeId, name.toString(), endereco, bairro, this@PlacesViewHolder.photo, this@PlacesViewHolder.latLng)) }
+                itemCard.setOnClickListener {
+                    if(latLng != null)
+                        onPlaceClicked(Place(place.placeId, name.toString(), endereco, bairro, this@PlacesViewHolder.photo, this@PlacesViewHolder.latLng))
+                }
             }
         }
 
         private fun ItemPlacesBinding.updatePhoto(context: Context, photoBitmap: Bitmap?) {
-            val dip = 5f
-            val px = TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP,
-                dip,
-                context.resources.displayMetrics
-            ).toInt()
+            val px = context.dipFromPixels(5f)
             this@PlacesViewHolder.photo = photoBitmap
-            Glide.with(context)
+            Glide.with(context.applicationContext)
                 .load(photoBitmap)
                 .apply(RequestOptions().transform(CenterCrop(), RoundedCorners(px)))
                 .into(image)

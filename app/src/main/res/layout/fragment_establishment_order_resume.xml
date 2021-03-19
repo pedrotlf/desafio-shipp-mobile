@@ -23,7 +23,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <include
-        android:id="@+id/card"
+        android:id="@+id/itemCard"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         layout="@layout/item_place_order"
@@ -39,7 +39,7 @@
         android:layout_margin="15dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/card"
+        app:layout_constraintTop_toBottomOf="@+id/itemCard"
         style="@style/CardStyle"
         app:contentPadding="16dp">
         <androidx.constraintlayout.widget.ConstraintLayout

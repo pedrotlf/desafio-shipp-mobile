@@ -1,25 +1,17 @@
 package br.com.pedrotlf.desafioshippmobile.utils
 
-import android.Manifest.permission.*
+import android.Manifest.permission.ACCESS_FINE_LOCATION
+import android.Manifest.permission.ACCESS_WIFI_STATE
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.os.Bundle
-import android.os.PersistableBundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.lifecycle.ViewModelProvider
-import br.com.pedrotlf.desafioshippmobile.establishments.EstablishmentsViewModel
-import br.com.pedrotlf.desafioshippmobile.order.OrderViewModel
-import org.jetbrains.anko.support.v4.act
 
 open class BaseActivity: AppCompatActivity() {
     private val REQUEST_CODE_LOCATION_PERMISSION = 6283
     private val LOCATION_DENIED = 6363
     val TAG: String
         get() = this.javaClass.simpleName
-
-    lateinit var establishmentsViewModel: EstablishmentsViewModel
-    lateinit var orderViewModel: OrderViewModel
 
     fun requestLocationPermission(callback: (()->Unit)? = {}){
         if (callback != null) {
@@ -50,8 +42,8 @@ open class BaseActivity: AppCompatActivity() {
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
+    override fun onActivityReenter(resultCode: Int, data: Intent?) {
+        super.onActivityReenter(resultCode, data)
         if(resultCode == LOCATION_DENIED)
             finish()
     }

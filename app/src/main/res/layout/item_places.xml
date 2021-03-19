@@ -7,7 +7,7 @@
     android:paddingEnd="15dp">
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/card"
+        android:id="@+id/itemCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
@@ -29,6 +29,7 @@
 
             <ProgressBar
                 android:id="@+id/imageProgress"
+                android:visibility="gone"
                 android:indeterminateTint="@color/gray"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
