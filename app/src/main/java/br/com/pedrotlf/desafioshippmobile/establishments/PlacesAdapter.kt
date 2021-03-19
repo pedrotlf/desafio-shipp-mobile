@@ -25,18 +25,10 @@ class PlacesAdapter(
     val onPlaceClicked: (EstablishmentOrder) -> Unit
 ) : ListAdapter<AutocompletePrediction, PlacesAdapter.PlacesViewHolder>(DiffCallback()) {
 
-//    var places: List<AutocompletePrediction> = listOf()
-//        set(value) {
-//            field = value
-//            notifyDataSetChanged()
-//        }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlacesViewHolder {
         val binding = ItemPlacesBinding.inflate(LayoutInflater.from(context), parent, false)
         return PlacesViewHolder(binding)
     }
-
-//    override fun getItemCount(): Int = places.size
 
     override fun onBindViewHolder(holder: PlacesViewHolder, position: Int) {
         val place = getItem(position)
@@ -44,8 +36,9 @@ class PlacesAdapter(
     }
 
     class PlacesViewHolder(private val binding: ItemPlacesBinding) : RecyclerView.ViewHolder(binding.root) {
-        var photo: Bitmap? = null
-        var latLng: LatLng? = null
+        private var photo: Bitmap? = null
+        private var id: String? = null
+        private var latLng: LatLng? = null
 
         fun bind(context: Context, place: AutocompletePrediction, updateDetails: (String, (LatLng?, Bitmap?)->Unit) -> Unit, onPlaceClicked: (EstablishmentOrder) -> Unit){
             binding.apply {
@@ -64,12 +57,15 @@ class PlacesAdapter(
                     null
                 }
 
-                image.setImageDrawable(null)
-                imageProgress.visibility = View.VISIBLE
-                updateDetails(place.placeId) { latLng, photoBitmap ->
-                    this@PlacesViewHolder.latLng = latLng
-                    imageProgress.visibility = View.GONE
-                    updatePhoto(context, photoBitmap)
+                if(this@PlacesViewHolder.id != place.placeId) {
+                    image.setImageDrawable(null)
+                    imageProgress.visibility = View.VISIBLE
+                    this@PlacesViewHolder.id = place.placeId
+                    updateDetails(place.placeId) { latLng, photoBitmap ->
+                        this@PlacesViewHolder.latLng = latLng
+                        imageProgress.visibility = View.GONE
+                        updatePhoto(context, photoBitmap)
+                    }
                 }
 
                 card.setOnClickListener { onPlaceClicked(EstablishmentOrder(place.placeId, name.toString(), endereco, bairro, this@PlacesViewHolder.photo, this@PlacesViewHolder.latLng)) }

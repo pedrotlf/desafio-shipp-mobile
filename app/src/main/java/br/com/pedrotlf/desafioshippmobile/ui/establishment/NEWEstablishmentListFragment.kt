@@ -2,6 +2,7 @@ package br.com.pedrotlf.desafioshippmobile.ui.establishment
 
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.annotation.RequiresPermission
 import androidx.appcompat.widget.SearchView
@@ -27,13 +28,12 @@ class NEWEstablishmentListFragment: Fragment(R.layout.fragment_establishments_li
     private val viewModel: EstablishmentsViewModel by viewModels()
 
     private lateinit var placesClient: PlacesClient
-    private var placesAdapter: PlacesAdapter? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val binding = FragmentEstablishmentsListBinding.bind(view)
 
-        placesAdapter = PlacesAdapter(requireContext(), getPlaceDetail, establishmentClicked)
+        val placesAdapter = PlacesAdapter(requireContext(), getPlaceDetail, establishmentClicked)
 
         binding.apply {
             recyclerPlaces.apply {
@@ -42,6 +42,16 @@ class NEWEstablishmentListFragment: Fragment(R.layout.fragment_establishments_li
                 setHasFixedSize(true)
             }
             configureSearchView()
+        }
+
+        viewModel.autoCompletePredictions.observe(viewLifecycleOwner){
+            placesAdapter.submitList(it){
+                if (it == null){
+                    binding.placesEmpty.visibility = View.VISIBLE
+                } else {
+                    binding.placesEmpty.visibility = View.GONE
+                }
+            }
         }
 
         initializePlacesApi()
@@ -65,7 +75,7 @@ class NEWEstablishmentListFragment: Fragment(R.layout.fragment_establishments_li
         val progress =
             indeterminateProgressDialog(R.string.search_establishments_current_location_loading)
         progress.setCancelable(false)
-        viewModel.updateCurrentLocation(placesClient) { progress.dismiss() }
+        viewModel.updateCurrentLocation(placesClient) { updated -> progress.dismiss() }
     }
 
     private val getPlaceDetail: (String, (LatLng?, Bitmap?)->Unit) -> Unit = { placeId, callback ->
@@ -111,30 +121,18 @@ class NEWEstablishmentListFragment: Fragment(R.layout.fragment_establishments_li
         search.setOnQueryTextFocusChangeListener { _, hasFocus ->
             search.isSelected = hasFocus
         }
-
         search.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 search.clearFocus()
-                if (!query.isNullOrBlank()) {
-                    progressBar.visibility = View.VISIBLE
-
-                    viewModel.getPlacesPredictions(placesClient, query) { predictionList ->
-                        progressBar.visibility = View.GONE
-                        if (!predictionList.isNullOrEmpty()) {
-                            placesAdapter?.submitList(predictionList) {
-                                placesEmpty.visibility = View.GONE
-                            }
-                        } else {
-                            placesAdapter?.submitList(listOf()) {
-                                placesEmpty.visibility = View.VISIBLE
-                            }
-                        }
-                    }
+                progressBar.visibility = View.VISIBLE
+                viewModel.getPlacesPredictions(placesClient, query){
+                    progressBar.visibility = View.GONE
                 }
                 return true
             }
-
             override fun onQueryTextChange(newText: String?): Boolean {
+                if(newText.isNullOrEmpty())
+                    viewModel.getPlacesPredictions(placesClient, newText)
                 return false
             }
         })
