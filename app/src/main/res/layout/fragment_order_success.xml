@@ -33,7 +33,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <include
-            android:id="@+id/card"
+            android:id="@+id/itemCard"
             layout="@layout/item_place_order"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

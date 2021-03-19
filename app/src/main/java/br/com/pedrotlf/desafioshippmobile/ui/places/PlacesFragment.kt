@@ -1,37 +1,40 @@
-package br.com.pedrotlf.desafioshippmobile.ui.establishment
+package br.com.pedrotlf.desafioshippmobile.ui.places
 
+import android.app.ProgressDialog
 import android.graphics.Bitmap
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.annotation.RequiresPermission
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import br.com.pedrotlf.desafioshippmobile.BuildConfig
-import br.com.pedrotlf.desafioshippmobile.EstablishmentOrder
 import br.com.pedrotlf.desafioshippmobile.R
-import br.com.pedrotlf.desafioshippmobile.databinding.FragmentEstablishmentsListBinding
-import br.com.pedrotlf.desafioshippmobile.establishments.EstablishmentsViewModel
-import br.com.pedrotlf.desafioshippmobile.establishments.PlacesAdapter
+import br.com.pedrotlf.desafioshippmobile.data.Place
+import br.com.pedrotlf.desafioshippmobile.databinding.FragmentPlacesBinding
 import br.com.pedrotlf.desafioshippmobile.utils.BaseActivity
+import br.com.pedrotlf.desafioshippmobile.utils.exhaustive
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.net.PlacesClient
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
 import org.jetbrains.anko.support.v4.indeterminateProgressDialog
-import org.jetbrains.anko.support.v4.toast
 
 @AndroidEntryPoint
-class NEWEstablishmentListFragment: Fragment(R.layout.fragment_establishments_list) {
-    private val viewModel: EstablishmentsViewModel by viewModels()
+class PlacesFragment: Fragment(R.layout.fragment_places) {
+    private val viewModel: PlacesViewModel by viewModels()
 
     private lateinit var placesClient: PlacesClient
 
+    private var progress: ProgressDialog? = null
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val binding = FragmentEstablishmentsListBinding.bind(view)
+        val binding = FragmentPlacesBinding.bind(view)
 
         val placesAdapter = PlacesAdapter(requireContext(), getPlaceDetail, establishmentClicked)
 
@@ -42,6 +45,7 @@ class NEWEstablishmentListFragment: Fragment(R.layout.fragment_establishments_li
                 setHasFixedSize(true)
             }
             configureSearchView()
+
         }
 
         viewModel.autoCompletePredictions.observe(viewLifecycleOwner){
@@ -51,6 +55,23 @@ class NEWEstablishmentListFragment: Fragment(R.layout.fragment_establishments_li
                 } else {
                     binding.placesEmpty.visibility = View.GONE
                 }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.placesEvent.collect {
+                when(it){
+                    is PlacesViewModel.PlacesEvent.CurrentLocationUpdated -> {
+                        progress?.dismiss()
+                    }
+                    is PlacesViewModel.PlacesEvent.NavigateToOrderDescription -> {
+                        val action = PlacesFragmentDirections.actionPlacesFragmentToOrderDescriptionFragment(it.place)
+                        findNavController().navigate(action)
+                    }
+                    PlacesViewModel.PlacesEvent.PlacesPredictionUpdated -> {
+                        binding.progressBar.visibility = View.GONE
+                    }
+                }.exhaustive
             }
         }
 
@@ -72,10 +93,11 @@ class NEWEstablishmentListFragment: Fragment(R.layout.fragment_establishments_li
 
     @RequiresPermission(allOf = ["android.permission.ACCESS_FINE_LOCATION", "android.permission.ACCESS_WIFI_STATE"])
     private fun updateUserLocation() {
-        val progress =
+        progress =
             indeterminateProgressDialog(R.string.search_establishments_current_location_loading)
-        progress.setCancelable(false)
-        viewModel.updateCurrentLocation(placesClient) { updated -> progress.dismiss() }
+        progress?.show()
+        progress?.setCancelable(false)
+        viewModel.updateCurrentLocation(placesClient)
     }
 
     private val getPlaceDetail: (String, (LatLng?, Bitmap?)->Unit) -> Unit = { placeId, callback ->
@@ -90,34 +112,11 @@ class NEWEstablishmentListFragment: Fragment(R.layout.fragment_establishments_li
         }
     }
 
-    private val establishmentClicked: (EstablishmentOrder) -> Unit = { establishmentOrder ->
-        if (establishmentOrder.photo == null || establishmentOrder.latLng == null) {
-            val progress =
-                indeterminateProgressDialog(getString(R.string.search_establishments_get_details_loading))
-            progress.setCancelable(false)
-            viewModel.getPlaceDetails(placesClient, establishmentOrder.id) { latLng, photoMetadata ->
-                if (latLng != null) {
-                    if (photoMetadata != null) {
-                        viewModel.getPlacePhoto(placesClient, photoMetadata) { returnedPhoto ->
-                            progress.dismiss()
-                            establishmentOrder.photo = returnedPhoto
-//                            establishmentClicked(establishmentOrder)
-                        }
-                    } else {
-                        progress.dismiss()
-//                        establishmentClicked(establishmentOrder)
-                    }
-                } else {
-                    progress.dismiss()
-                    toast(R.string.search_establishments_get_details_error)
-                }
-            }
-        } else {
-//            establishmentClicked(establishmentOrder)
-        }
+    private val establishmentClicked: (Place) -> Unit = { place ->
+        viewModel.onPlaceSelected(place)
     }
 
-    private fun FragmentEstablishmentsListBinding.configureSearchView() {
+    private fun FragmentPlacesBinding.configureSearchView() {
         search.setOnQueryTextFocusChangeListener { _, hasFocus ->
             search.isSelected = hasFocus
         }
@@ -125,14 +124,13 @@ class NEWEstablishmentListFragment: Fragment(R.layout.fragment_establishments_li
             override fun onQueryTextSubmit(query: String?): Boolean {
                 search.clearFocus()
                 progressBar.visibility = View.VISIBLE
-                viewModel.getPlacesPredictions(placesClient, query){
-                    progressBar.visibility = View.GONE
-                }
+                viewModel.getPlacesPredictions(placesClient)
                 return true
             }
             override fun onQueryTextChange(newText: String?): Boolean {
+                viewModel.searchQuery.value = newText ?: ""
                 if(newText.isNullOrEmpty())
-                    viewModel.getPlacesPredictions(placesClient, newText)
+                    viewModel.getPlacesPredictions(placesClient)
                 return false
             }
         })

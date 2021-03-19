@@ -3,10 +3,27 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/NEWEstablishmentListFragment">
+    app:startDestination="@id/placesFragment">
     <fragment
-        android:id="@+id/NEWEstablishmentListFragment"
-        android:name="br.com.pedrotlf.desafioshippmobile.ui.establishment.NEWEstablishmentListFragment"
-        android:label="fragment_establishments_list"
-        tools:layout="@layout/fragment_establishments_list" />
+        android:id="@+id/placesFragment"
+        android:name="br.com.pedrotlf.desafioshippmobile.ui.places.PlacesFragment"
+        android:label="fragment_places"
+        tools:layout="@layout/fragment_places" >
+        <action
+            android:id="@+id/action_placesFragment_to_orderDescriptionFragment"
+            app:destination="@id/orderDescriptionFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/orderDescriptionFragment"
+        android:name="br.com.pedrotlf.desafioshippmobile.ui.order.description.OrderDescriptionFragment"
+        android:label="fragment_order_description"
+        tools:layout="@layout/fragment_order_description" >
+        <argument
+            android:name="place"
+            app:argType="br.com.pedrotlf.desafioshippmobile.data.Place" />
+    </fragment>
 </navigation>

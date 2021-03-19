@@ -6,9 +6,11 @@ import br.com.pedrotlf.desafioshippmobile.utils.BaseActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class NEWOrderActivity: BaseActivity() {
+class MainActivity: BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+
     }
 }
