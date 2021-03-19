@@ -3,9 +3,10 @@ Simulação de fechamento de pedido em estabelecimento utilizando a *Places API*
 
 Como a ideia é que o app nunca vá para a loja, irei manter na master o que acredito ser "estável" :)
 
-**Utilizando arquitetura MVVM (Model View View-Model)**
+### Arquiteturas
+* MVVM (Model View View-Model)
 
-**Utilizando componentes como:**
+### Componentes utilizados
 * Kotlin Flow
   * Notificando mudanças nos dados atraves do operador flatMapLatest
 * LiveData
