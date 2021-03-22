@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/placesFragment">
+    <fragment
+        android:id="@+id/placesFragment"
+        android:name="br.com.pedrotlf.desafioshippmobile.ui.places.PlacesFragment"
+        android:label="fragment_places"
+        tools:layout="@layout/fragment_places" >
+        <action
+            android:id="@+id/action_placesFragment_to_orderDescriptionFragment"
+            app:destination="@id/orderDescriptionFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/orderDescriptionFragment"
+        android:name="br.com.pedrotlf.desafioshippmobile.ui.order.description.OrderDescriptionFragment"
+        android:label="fragment_order_description"
+        tools:layout="@layout/fragment_order_description" >
+        <argument
+            android:name="order"
+            app:argType="br.com.pedrotlf.desafioshippmobile.data.Order" />
+        <action
+            android:id="@+id/action_orderDescriptionFragment_to_orderPriceFragment"
+            app:destination="@id/orderPriceFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/orderPriceFragment"
+        android:name="br.com.pedrotlf.desafioshippmobile.ui.order.price.OrderPriceFragment"
+        android:label="fragment_order_price"
+        tools:layout="@layout/fragment_order_price" >
+        <argument
+            android:name="order"
+            app:argType="br.com.pedrotlf.desafioshippmobile.data.Order" />
+        <action
+            android:id="@+id/action_orderPriceFragment_to_orderResumeFragment"
+            app:destination="@id/orderResumeFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/orderResumeFragment"
+        android:name="br.com.pedrotlf.desafioshippmobile.ui.order.resume.OrderResumeFragment"
+        android:label="fragment_order_resume"
+        tools:layout="@layout/fragment_order_resume" >
+        <argument
+            android:name="order"
+            app:argType="br.com.pedrotlf.desafioshippmobile.data.Order" />
+        <action
+            android:id="@+id/action_orderResumeFragment_to_orderSuccessFragment"
+            app:destination="@id/orderSuccessFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/orderSuccessFragment"
+        android:name="br.com.pedrotlf.desafioshippmobile.ui.order.success.OrderSuccessFragment"
+        android:label="fragment_order_success"
+        tools:layout="@layout/fragment_order_success" >
+        <action
+            android:id="@+id/action_orderSuccessFragment_to_placesFragment"
+            app:destination="@id/placesFragment"
+            app:enterAnim="@anim/from_left"
+            app:exitAnim="@anim/to_right"
+            app:popUpTo="@id/placesFragment"
+            app:popUpToInclusive="true" />
+        <argument
+            android:name="order"
+            app:argType="br.com.pedrotlf.desafioshippmobile.data.Order" />
+    </fragment>
+</navigation>
