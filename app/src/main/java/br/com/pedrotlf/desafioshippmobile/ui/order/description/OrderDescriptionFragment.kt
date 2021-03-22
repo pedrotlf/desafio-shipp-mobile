@@ -43,7 +43,7 @@ class OrderDescriptionFragment: Fragment(R.layout.fragment_order_description) {
                 .into(card.image)
 
             btnBack.setOnClickListener { requireActivity().onBackPressed() }
-            btnNext.setOnClickListener { fragViewModel.onNextClicked(orderViewModel.place) }
+            btnNext.setOnClickListener { fragViewModel.onNextClicked(orderViewModel.order) }
 
             orderDetails.addTextChangedListener(object : TextWatcher{
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { }

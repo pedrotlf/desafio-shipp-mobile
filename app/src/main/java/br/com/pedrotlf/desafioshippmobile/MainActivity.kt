@@ -1,4 +1,4 @@
-package br.com.pedrotlf.desafioshippmobile.ui
+package br.com.pedrotlf.desafioshippmobile
 
 import android.os.Bundle
 import androidx.navigation.NavController

@@ -1,30 +1,44 @@
 package br.com.pedrotlf.desafioshippmobile.ui.order.resume
 
-import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.pedrotlf.desafioshippmobile.data.Order
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedInject
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.receiveAsFlow
+import br.com.pedrotlf.desafioshippmobile.data.OrderRepository
+import br.com.pedrotlf.desafioshippmobile.utils.DataState
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class OrderResumeViewModel @AssistedInject constructor(
-        @Assisted private val state: SavedStateHandle
+@HiltViewModel
+class OrderResumeViewModel @Inject constructor(
+        private val orderRepository: OrderRepository
 ) : ViewModel() {
 
-    private val orderResumeEventsChannel = Channel<OrderResumeEvents>()
-    val orderResumeEvents = orderResumeEventsChannel.receiveAsFlow()
-
     sealed class OrderResumeEvents{
-        data class NavigateToSuccess(val order: Order) : OrderResumeEvents()
+        data class GetCheckout(val order: Order) : OrderResumeEvents()
     }
 
-    fun onNextClicked(order: Order?) {
-        if (order != null)
-            viewModelScope.launch {
-                orderResumeEventsChannel.send(OrderResumeEvents.NavigateToSuccess(order))
+    private val _checkoutState = MutableLiveData<DataState<Order>>()
+    val checkoutState: LiveData<DataState<Order>>
+        get() = _checkoutState
+
+    private fun setCheckoutState(event: OrderResumeEvents) {
+        viewModelScope.launch {
+            when (event) {
+                is OrderResumeEvents.GetCheckout -> {
+                    orderRepository.getCheckout(event.order).onEach {
+                        _checkoutState.value = it
+                    }.launchIn(viewModelScope)
+                }
             }
+        }
+    }
+
+    fun onNextClicked(order: Order) {
+        setCheckoutState(OrderResumeEvents.GetCheckout(order))
     }
 }

@@ -24,10 +24,10 @@ class OrderDescriptionViewModel @AssistedInject constructor(
         data class NavigateToPrices(val order: Order) : OrderDescriptionEvents()
     }
 
-    fun onNextClicked(place: Place?) {
-        if (place != null)
+    fun onNextClicked(order: Order?) {
+        if (order != null)
             viewModelScope.launch {
-                orderDescriptionEventsChannel.send(OrderDescriptionEvents.NavigateToPrices(Order(place).apply { orderDetails = this@OrderDescriptionViewModel.orderDetails.value ?: "" }))
+                orderDescriptionEventsChannel.send(OrderDescriptionEvents.NavigateToPrices(order.apply { orderDetails = this@OrderDescriptionViewModel.orderDetails.value ?: "" }))
             }
     }
 }

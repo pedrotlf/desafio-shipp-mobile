@@ -23,8 +23,8 @@
         android:label="fragment_order_description"
         tools:layout="@layout/fragment_order_description" >
         <argument
-            android:name="place"
-            app:argType="br.com.pedrotlf.desafioshippmobile.data.Place" />
+            android:name="order"
+            app:argType="br.com.pedrotlf.desafioshippmobile.data.Order" />
         <action
             android:id="@+id/action_orderDescriptionFragment_to_orderPriceFragment"
             app:destination="@id/orderPriceFragment"

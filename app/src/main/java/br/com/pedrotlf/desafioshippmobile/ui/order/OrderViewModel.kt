@@ -57,4 +57,6 @@ class OrderViewModel @AssistedInject constructor(
             field = value
             state.set("orderTotalPrice", value)
         }
+
+
 }

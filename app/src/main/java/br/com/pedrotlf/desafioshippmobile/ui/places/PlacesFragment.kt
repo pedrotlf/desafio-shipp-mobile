@@ -13,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import br.com.pedrotlf.desafioshippmobile.BuildConfig
 import br.com.pedrotlf.desafioshippmobile.R
+import br.com.pedrotlf.desafioshippmobile.data.Order
 import br.com.pedrotlf.desafioshippmobile.data.Place
 import br.com.pedrotlf.desafioshippmobile.databinding.FragmentPlacesBinding
 import br.com.pedrotlf.desafioshippmobile.utils.BaseActivity
@@ -65,7 +66,7 @@ class PlacesFragment: Fragment(R.layout.fragment_places) {
                         progress?.dismiss()
                     }
                     is PlacesViewModel.PlacesEvent.NavigateToOrderDescription -> {
-                        val action = PlacesFragmentDirections.actionPlacesFragmentToOrderDescriptionFragment(it.place)
+                        val action = PlacesFragmentDirections.actionPlacesFragmentToOrderDescriptionFragment(it.order)
                         findNavController().navigate(action)
                     }
                     PlacesViewModel.PlacesEvent.PlacesPredictionUpdated -> {
@@ -113,7 +114,7 @@ class PlacesFragment: Fragment(R.layout.fragment_places) {
     }
 
     private val establishmentClicked: (Place) -> Unit = { place ->
-        viewModel.onPlaceSelected(place)
+        viewModel.onPlaceSelected(Order(place, viewModel.currentLocation))
     }
 
     private fun FragmentPlacesBinding.configureSearchView() {

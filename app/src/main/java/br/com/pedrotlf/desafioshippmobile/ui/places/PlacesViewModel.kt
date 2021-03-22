@@ -6,6 +6,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import br.com.pedrotlf.desafioshippmobile.data.Order
 import br.com.pedrotlf.desafioshippmobile.data.Place
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.maps.model.LatLng
@@ -26,7 +27,7 @@ class PlacesViewModel @AssistedInject constructor(
 
     private var autocompleteSessionToken: AutocompleteSessionToken = AutocompleteSessionToken.newInstance()
 
-    private var currentLocation: LatLng? = null
+    var currentLocation: LatLng? = null
 
     val searchQuery = state.getLiveData("searchQuery", "")
 
@@ -42,10 +43,10 @@ class PlacesViewModel @AssistedInject constructor(
     sealed class PlacesEvent{
         object CurrentLocationUpdated : PlacesEvent()
         object PlacesPredictionUpdated: PlacesEvent()
-        data class NavigateToOrderDescription(val place: Place) : PlacesEvent()
+        data class NavigateToOrderDescription(val order: Order) : PlacesEvent()
     }
 
-    fun onPlaceSelected(order: Place) = viewModelScope.launch {
+    fun onPlaceSelected(order: Order) = viewModelScope.launch {
         placesEventChannel.send(PlacesEvent.NavigateToOrderDescription(order))
     }
 

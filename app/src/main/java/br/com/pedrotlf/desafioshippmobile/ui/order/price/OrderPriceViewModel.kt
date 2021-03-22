@@ -1,38 +1,47 @@
 package br.com.pedrotlf.desafioshippmobile.ui.order.price
 
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import br.com.pedrotlf.desafioshippmobile.data.Order
-import br.com.pedrotlf.desafioshippmobile.data.Place
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedInject
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.receiveAsFlow
+import br.com.pedrotlf.desafioshippmobile.data.OrderRepository
+import br.com.pedrotlf.desafioshippmobile.utils.DataState
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
+import javax.inject.Inject
 
-class OrderPriceViewModel @AssistedInject constructor(
-        @Assisted private val state: SavedStateHandle
+@HiltViewModel
+class OrderPriceViewModel @Inject constructor(
+        private val orderRepository: OrderRepository,
+        state: SavedStateHandle
 ) : ViewModel() {
-
-    private val orderDescriptionEventsChannel = Channel<OrderPriceEvents>()
-    val orderDescriptionEvents = orderDescriptionEventsChannel.receiveAsFlow()
-
     val orderPrice = state.getLiveData("orderPrice", "")
 
     sealed class OrderPriceEvents{
-        data class NavigateToResume(val order: Order) : OrderPriceEvents()
+        data class GetResume(val order: Order) : OrderPriceEvents()
+        object None : OrderPriceEvents()
     }
 
-    fun onNextClicked(order: Order?) {
-        if (order != null)
-            viewModelScope.launch {
-                orderDescriptionEventsChannel.send(
-                        OrderPriceEvents.NavigateToResume(order.apply {
-                            price = NumberFormat.getCurrencyInstance().parse(orderPrice.value?.toString() ?: "")?.toDouble()
-                        })
-                )
+    private val _validationState = MutableLiveData<DataState<Order>>()
+    val validationState: LiveData<DataState<Order>>
+        get() = _validationState
+
+    private fun setValidationState(event: OrderPriceEvents){
+        viewModelScope.launch {
+            when(event){
+                is OrderPriceEvents.GetResume -> {
+                    orderRepository.getResumeValidation(event.order.apply {
+                        price = NumberFormat.getCurrencyInstance().parse(orderPrice.value?.toString() ?: "")?.toDouble()
+                    }).onEach {
+                        _validationState.value = it
+                    }.launchIn(viewModelScope)
+                }
             }
+        }
+    }
+
+    fun onNextClicked(order: Order){
+        setValidationState(OrderPriceEvents.GetResume(order))
     }
 }
