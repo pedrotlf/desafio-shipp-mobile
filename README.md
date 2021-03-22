@@ -3,13 +3,13 @@ Simulação de fechamento de pedido em estabelecimento utilizando a *Places API*
 
 Link do desafio: https://bitbucket.org/zaittgroup/desafio-shipp-mobile/src/master/
 
-###TO DO
+### TO DO
 Tela de cartões (armazenando o cartão em cache)
 
 ### Arquiteturas
 * MVVM (Model View View-Model)
 
-###Bibliotecas principais
+### Bibliotecas principais
 * Dagger (Hilt)
   * Para injeções de dependências no geral.
 * Retrofit2
