@@ -16,7 +16,7 @@
         android:networkSecurityConfig="@xml/network_security_config"
         android:theme="@style/Theme.DesafioShipMobile">
         <activity android:name="br.com.pedrotlf.desafioshippmobile.ui.MainActivity"
-            android:windowSoftInputMode="stateAlwaysHidden">
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

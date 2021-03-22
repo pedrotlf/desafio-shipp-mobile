@@ -8,7 +8,7 @@ import java.math.BigDecimal
 import java.text.NumberFormat
 
 
-class MoneyTextWatcher(editText: EditText?, private val onPriceCallback: (Boolean)->Unit) : TextWatcher {
+class MoneyTextWatcher(editText: EditText?, private val onPriceChangedCallback: (Float, String)->Unit) : TextWatcher {
     private val editTextWeakReference: WeakReference<EditText> = WeakReference<EditText>(editText)
     override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
     override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
@@ -24,7 +24,7 @@ class MoneyTextWatcher(editText: EditText?, private val onPriceCallback: (Boolea
         editText.setSelection(formatted.length)
         editText.addTextChangedListener(this)
 
-        onPriceCallback(parsed > BigDecimal.ZERO)
+        onPriceChangedCallback(parsed.toFloat(), formatted)
     }
 
 }

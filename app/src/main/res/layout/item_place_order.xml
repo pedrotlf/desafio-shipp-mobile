@@ -86,7 +86,6 @@
             <TextView
                 android:id="@+id/description"
                 android:visibility="visible"
-                android:text="Rocambole"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"

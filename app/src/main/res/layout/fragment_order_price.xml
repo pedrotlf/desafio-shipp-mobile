@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".ui.order.description.OrderDescriptionFragment">
+    tools:context=".ui.order.price.OrderPriceFragment">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -48,27 +48,26 @@
                 android:id="@+id/textView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/establishment_order_description_describe_text"
+                android:text="@string/establishment_order_price_describe_text"
                 android:padding="15dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/card" />
 
             <EditText
-                android:id="@+id/orderDetails"
+                android:id="@+id/inputPrice"
                 style="@style/EditTextStyle"
-                android:gravity="start|top"
-                android:inputType="textCapSentences|textMultiLine"
+                android:gravity="start"
+                android:inputType="number"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="15dp"
                 android:layout_marginEnd="15dp"
-                android:minHeight="80dp"
+                android:singleLine="true"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
     </ScrollView>
 
     <ImageView
@@ -89,12 +88,12 @@
         android:layout_height="wrap_content"
         android:background="@drawable/btn_next_background"
         android:text="@string/establishment_order_description_btn_next"
-        android:textStyle="bold"
-        android:enabled="false"
         android:textColor="@color/black"
+        android:textStyle="bold"
         android:gravity="center"
         android:minWidth="160dp"
         android:padding="15dp"
+        android:enabled="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_margin="20dp"/>

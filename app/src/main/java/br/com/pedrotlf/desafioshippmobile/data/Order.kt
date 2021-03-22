@@ -5,10 +5,10 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class Order(
-        val place: Place,
+        val place: Place?,
         var orderDetails: String?,
         var price: Double?,
         var totalPrice: Double?
 ): Parcelable {
-        constructor(place: Place): this(place, null, null, null)
+        constructor(place: Place?): this(place, null, null, null)
 }

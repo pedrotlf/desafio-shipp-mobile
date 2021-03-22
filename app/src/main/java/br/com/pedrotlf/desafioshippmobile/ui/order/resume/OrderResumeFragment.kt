@@ -1,15 +1,13 @@
-package br.com.pedrotlf.desafioshippmobile.ui.order.description
+package br.com.pedrotlf.desafioshippmobile.ui.order.resume
 
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import br.com.pedrotlf.desafioshippmobile.R
-import br.com.pedrotlf.desafioshippmobile.databinding.FragmentOrderDescriptionBinding
+import br.com.pedrotlf.desafioshippmobile.databinding.FragmentOrderResumeBinding
 import br.com.pedrotlf.desafioshippmobile.ui.order.OrderViewModel
 import br.com.pedrotlf.desafioshippmobile.utils.dipFromPixels
 import com.bumptech.glide.Glide
@@ -18,17 +16,17 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
+import java.text.NumberFormat
 
 @AndroidEntryPoint
-class OrderDescriptionFragment: Fragment(R.layout.fragment_order_description) {
-
-    private val fragViewModel: OrderDescriptionViewModel by viewModels()
+class OrderResumeFragment : Fragment(R.layout.fragment_order_resume) {
+    private val fragViewModel: OrderResumeViewModel by viewModels()
     private val orderViewModel: OrderViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val binding = FragmentOrderDescriptionBinding.bind(view)
+        val binding = FragmentOrderResumeBinding.bind(view)
 
         binding.apply {
             card.placeTitle.text = orderViewModel.orderEstablishmentName
@@ -38,29 +36,27 @@ class OrderDescriptionFragment: Fragment(R.layout.fragment_order_description) {
             else
                 card.city.visibility = View.GONE
             Glide.with(requireContext().applicationContext)
-                .load(orderViewModel.orderEstablishmentPhoto)
-                .apply(RequestOptions().transform(CenterCrop(), RoundedCorners(requireContext().dipFromPixels(5f))))
-                .into(card.image)
+                    .load(orderViewModel.orderEstablishmentPhoto)
+                    .apply(RequestOptions().transform(CenterCrop(), RoundedCorners(requireContext().dipFromPixels(5f))))
+                    .into(card.image)
+            card.description.text = orderViewModel.orderDetails
+
+            val totalPrice = try {
+                NumberFormat.getCurrencyInstance().format(orderViewModel.orderPrice)
+            } catch (e: Exception){
+                0
+            }
+            card.price.text = getString(R.string.establishment_order_resume_price_label, totalPrice)
 
             btnBack.setOnClickListener { requireActivity().onBackPressed() }
-            btnNext.setOnClickListener { fragViewModel.onNextClicked(orderViewModel.place) }
-
-            orderDetails.addTextChangedListener(object : TextWatcher{
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { }
-                override fun afterTextChanged(s: Editable?) {
-                    btnNext.isEnabled = !s.isNullOrBlank()
-                }
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    fragViewModel.orderDetails.value = s.toString()
-                }
-            })
+            btnNext.setOnClickListener { fragViewModel.onNextClicked(orderViewModel.order) }
         }
 
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            fragViewModel.orderDescriptionEvents.collect{
+            fragViewModel.orderResumeEvents.collect{
                 when(it){
-                    is OrderDescriptionViewModel.OrderDescriptionEvents.NavigateToPrices -> {
-                        val action = OrderDescriptionFragmentDirections.actionOrderDescriptionFragmentToOrderPriceFragment(it.order)
+                    is OrderResumeViewModel.OrderResumeEvents.NavigateToSuccess -> {
+                        val action = OrderResumeFragmentDirections.actionOrderResumeFragmentToOrderSuccessFragment(it.order)
                         findNavController().navigate(action)
                     }
                 }
