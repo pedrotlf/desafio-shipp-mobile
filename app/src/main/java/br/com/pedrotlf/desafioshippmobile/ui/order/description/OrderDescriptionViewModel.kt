@@ -1,39 +1,33 @@
 package br.com.pedrotlf.desafioshippmobile.ui.order.description
 
-import android.graphics.Bitmap
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import br.com.pedrotlf.desafioshippmobile.data.Order
 import br.com.pedrotlf.desafioshippmobile.data.Place
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.launch
 
 class OrderDescriptionViewModel @AssistedInject constructor(
     @Assisted private val state: SavedStateHandle
 ) : ViewModel() {
 
-    val place = state.get<Place>("place")
+    private val orderDescriptionEventsChannel = Channel<OrderDescriptionEvents>()
+    val orderDescriptionEvents = orderDescriptionEventsChannel.receiveAsFlow()
 
-    var orderEstablishmentName = state.get<String>("placeName") ?: place?.name ?: ""
-        set(value) {
-            field = value
-            state.set("placeName", value)
-        }
+    val orderDetails = state.getLiveData("orderDetails", "")
 
-    var orderEstablishmentAddress = state.get<String>("placeAddress") ?: place?.address ?: ""
-        set(value) {
-            field = value
-            state.set("placeAddress", value)
-        }
+    sealed class OrderDescriptionEvents{
+        data class NavigateToPrices(val order: Order) : OrderDescriptionEvents()
+    }
 
-    var orderEstablishmentCity = state.get<String>("placeCity") ?: place?.city ?: ""
-        set(value) {
-            field = value
-            state.set("placeCity", value)
-        }
-
-    var orderEstablishmentPhoto = state.get<Bitmap>("placePhoto") ?: place?.photo
-        set(value) {
-            field = value
-            state.set("placePhoto", value)
-        }
+    fun onNextClicked(order: Order?) {
+        if (order != null)
+            viewModelScope.launch {
+                orderDescriptionEventsChannel.send(OrderDescriptionEvents.NavigateToPrices(order.apply { orderDetails = this@OrderDescriptionViewModel.orderDetails.value ?: "" }))
+            }
+    }
 }
