@@ -1,7 +1,7 @@
 package br.com.pedrotlf.desafioshippmobile.dependencyinjection
 
 import br.com.pedrotlf.desafioshippmobile.api.OrderApi
-import br.com.pedrotlf.desafioshippmobile.data.OrderRepository
+import br.com.pedrotlf.desafioshippmobile.data.order.OrderRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

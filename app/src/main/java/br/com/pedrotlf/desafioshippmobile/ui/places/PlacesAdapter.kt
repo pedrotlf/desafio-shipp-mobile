@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import br.com.pedrotlf.desafioshippmobile.data.Order
 import br.com.pedrotlf.desafioshippmobile.data.Place
 import br.com.pedrotlf.desafioshippmobile.databinding.ItemPlacesBinding
 import br.com.pedrotlf.desafioshippmobile.utils.dipFromPixels

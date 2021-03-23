@@ -3,7 +3,7 @@ package br.com.pedrotlf.desafioshippmobile.ui.order
 import android.graphics.Bitmap
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import br.com.pedrotlf.desafioshippmobile.data.Order
+import br.com.pedrotlf.desafioshippmobile.data.order.Order
 import br.com.pedrotlf.desafioshippmobile.data.Place
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
