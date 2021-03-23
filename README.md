@@ -36,7 +36,7 @@ Link do desafio: https://bitbucket.org/zaittgroup/desafio-shipp-mobile/src/maste
   * Aplicar animação nas transições.
 
 ## Bugs conhecidos
-* Ao deixar o app em background, nas telas após a inicial, o app quebra
+* Após selecionar um estabelecimento que possui foto, ao deixar o app em background, o app quebra.
   * Motivo:
     * Estamos carregando a imagem do estabelecimento selecionado entre os fragments como um *Bitmap* através do *SavedStateHandle*. Quando o app vai para o *background*, ele tenta armazenar esse *SavedStateHandle*, porém, os dados são muito grandes para serem armazenados, devido ao *Bitmap*, e acabamos tendo uma *RuntimeException*.
 	* Fizemos isso pois a *Places API* nos retorna um *Bitmap* para ser usado como a imagem do estabelecimento, porém não é uma boa prática ficar carregando esse *Bitmap* entre os *fragments*. A *viewModel* até consegue lidar com o tamanho dos dados, mas quando for necessário jogar o app para o *background*, o Android não será capaz de armazená-lo.
