@@ -15,7 +15,7 @@ import br.com.pedrotlf.desafioshippmobile.data.card.Card
 import br.com.pedrotlf.desafioshippmobile.databinding.ItemCardBinding
 import javax.inject.Inject
 
-class CardsAdapter : ListAdapter<Card, CardsAdapter.CardViewHolder>(DiffCallback()) {
+class CardsAdapter(private val onClickListener: OnItemClickListener) : ListAdapter<Card, CardsAdapter.CardViewHolder>(DiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CardViewHolder {
         val binding = ItemCardBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -24,20 +24,39 @@ class CardsAdapter : ListAdapter<Card, CardsAdapter.CardViewHolder>(DiffCallback
 
     override fun onBindViewHolder(holder: CardViewHolder, position: Int) {
         val currentItem = getItem(position)
-        holder.bind(currentItem, position == 0)
+        holder.bind(currentItem)
     }
 
-    class CardViewHolder @Inject constructor(
-            private val binding: ItemCardBinding,
-            ) : RecyclerView.ViewHolder(binding.root){
-
-        fun bind(card: Card, isFirst: Boolean){
+    inner class CardViewHolder (private val binding: ItemCardBinding) : RecyclerView.ViewHolder(binding.root){
+        init {
             binding.apply {
-                cardNumber.text = "•••• ${card.number.takeLast(4)}"
-
-                separator.visibility = if(isFirst) View.GONE else View.VISIBLE
+                root.setOnClickListener {
+                    val position = adapterPosition
+                    if (position != RecyclerView.NO_POSITION){
+                        val card = getItem(position)
+                        onClickListener.onItemClick(card)
+                    }
+                }
+                btnEdit.setOnClickListener {
+                    val position = adapterPosition
+                    if (position != RecyclerView.NO_POSITION){
+                        val card = getItem(position)
+                        onClickListener.onItemEditClick(card)
+                    }
+                }
             }
         }
+
+        fun bind(card: Card){
+            binding.apply {
+                cardNumber.text = "•••• ${card.number.takeLast(4)}"
+            }
+        }
+    }
+
+    interface OnItemClickListener {
+        fun onItemClick(card: Card)
+        fun onItemEditClick(card: Card)
     }
 
     class DiffCallback: DiffUtil.ItemCallback<Card>(){

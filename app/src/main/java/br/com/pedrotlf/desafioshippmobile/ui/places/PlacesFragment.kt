@@ -4,6 +4,7 @@ import android.app.ProgressDialog
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.View
+import androidx.annotation.NonNull
 import androidx.annotation.RequiresPermission
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
@@ -59,14 +60,23 @@ class PlacesFragment: Fragment(R.layout.fragment_places) {
             }
         }
 
+        registerEventCollector(binding)
+
+        initializePlacesApi()
+    }
+
+    private fun registerEventCollector(binding: FragmentPlacesBinding) {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.placesEvent.collect {
-                when(it){
+                when (it) {
                     is PlacesViewModel.PlacesEvent.CurrentLocationUpdated -> {
                         progress?.dismiss()
                     }
                     is PlacesViewModel.PlacesEvent.NavigateToOrderDescription -> {
-                        val action = PlacesFragmentDirections.actionPlacesFragmentToOrderDescriptionFragment(it.order)
+                        val action =
+                            PlacesFragmentDirections.actionPlacesFragmentToOrderDescriptionFragment(
+                                it.order
+                            )
                         findNavController().navigate(action)
                     }
                     PlacesViewModel.PlacesEvent.PlacesPredictionUpdated -> {
@@ -75,8 +85,6 @@ class PlacesFragment: Fragment(R.layout.fragment_places) {
                 }.exhaustive
             }
         }
-
-        initializePlacesApi()
     }
 
     private fun initializePlacesApi() {

@@ -109,13 +109,7 @@
         <argument
             android:name="card"
             app:argType="br.com.pedrotlf.desafioshippmobile.data.card.Card"
-            app:nullable="true" />
-        <action
-            android:id="@+id/action_addEditCardFragment_to_orderResumeFragment"
-            app:destination="@id/orderResumeFragment"
-            app:enterAnim="@anim/from_top"
-            app:exitAnim="@anim/to_bottom"
-            app:popUpTo="@id/orderResumeFragment"
-            app:popUpToInclusive="true" />
+            app:nullable="true"
+            android:defaultValue="@null" />
     </fragment>
 </navigation>

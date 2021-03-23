@@ -1,6 +1,7 @@
 package br.com.pedrotlf.desafioshippmobile.ui.order.price
 
 import androidx.lifecycle.*
+import br.com.pedrotlf.desafioshippmobile.data.card.CardDao
 import br.com.pedrotlf.desafioshippmobile.data.order.Order
 import br.com.pedrotlf.desafioshippmobile.data.order.OrderRepository
 import br.com.pedrotlf.desafioshippmobile.utils.DataState

@@ -24,9 +24,9 @@ abstract class CardDatabase : RoomDatabase(){
             val dao = database.get().cardDao()
 
             applicationScope.launch {
-                dao.insert(Card())
-                dao.insert(Card("1212121212121212"))
-                dao.insert(Card("1234123412341234"))
+//                dao.insert(Card())
+//                dao.insert(Card("1212121212121212"))
+//                dao.insert(Card("1234123412341234"))
             }
         }
     }
