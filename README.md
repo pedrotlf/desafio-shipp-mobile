@@ -3,14 +3,10 @@ Simulação de fechamento de pedido em estabelecimento utilizando a *Places API*
 
 Link do desafio: https://bitbucket.org/zaittgroup/desafio-shipp-mobile/src/master/
 
-### Bugs Conhecidos
-* Ao deixar o app em background, nas telas após a inicial, o app quebra
-  * Motivo:
-    * Estamos carregando a imagem do estabelecimento selecionado entre os fragments como um *Bitmap* através do *SavedStateHandle*. Quando o app vai para o *background*, ele tenta armazenar esse *SavedStateHandle*, porém, os dados são muito grandes para serem armazenados, devido ao *Bitmap*, e acabamos tendo uma *RuntimeException*.
-	* Fizemos isso pois a *Places API* nos retorna um *Bitmap* para ser usado como a imagem do estabelecimento, porém não é uma boa prática ficar carregando esse *Bitmap* entre os *fragments*. A *viewModel* até consegue lidar com o tamanho dos dados, mas quando for necessário jogar o app para o *background*, o Android não será capaz de armazená-lo.
-  * Solução:
-    * O certo seria armazenar as imagens em *cache*. Poderíamos usar o componente *Room* para armazenar a imagem em uma tabela registrando também sua *photoMetadata* (dado necessário para buscar a imagem na *Places API*), dessa forma poderíamos evitar buscas desnecessárias por imagens já armazenadas, o que poupa o usuário algum tempo. Como os dados estaríam armazenados em um banco de dados local, seríamos capazes de acessar esses dados de qualquer viewModel sem precisar do *SavedStateHandle*, logo não precisaríamos nos preocupar com o app indo para o background.
+## TO DO
+Ajustar os [bugs conhecidos](#bugs-conhecidos)
 
+## Recursos utilizados na Aplicação
 ### Arquiteturas
 * MVVM (Model View View-Model)
 
@@ -37,3 +33,11 @@ Link do desafio: https://bitbucket.org/zaittgroup/desafio-shipp-mobile/src/maste
 * Navigation Component
   * Para controlar a navegação e as transições entre as telas.
   * Aplicar animação nas transições.
+
+## Bugs conhecidos
+* Ao deixar o app em background, nas telas após a inicial, o app quebra
+  * Motivo:
+    * Estamos carregando a imagem do estabelecimento selecionado entre os fragments como um *Bitmap* através do *SavedStateHandle*. Quando o app vai para o *background*, ele tenta armazenar esse *SavedStateHandle*, porém, os dados são muito grandes para serem armazenados, devido ao *Bitmap*, e acabamos tendo uma *RuntimeException*.
+	* Fizemos isso pois a *Places API* nos retorna um *Bitmap* para ser usado como a imagem do estabelecimento, porém não é uma boa prática ficar carregando esse *Bitmap* entre os *fragments*. A *viewModel* até consegue lidar com o tamanho dos dados, mas quando for necessário jogar o app para o *background*, o Android não será capaz de armazená-lo.
+  * Solução:
+    * O certo seria armazenar as imagens em *cache*. Poderíamos usar o componente *Room* para armazenar a imagem em uma tabela registrando também sua *photoMetadata* (dado necessário para buscar a imagem na *Places API*), dessa forma poderíamos evitar buscas desnecessárias por imagens já armazenadas, o que poupa o usuário algum tempo. Como os dados estaríam armazenados em um banco de dados local, seríamos capazes de acessar esses dados de qualquer viewModel sem precisar do *SavedStateHandle*, logo não precisaríamos nos preocupar com o app indo para o background.
