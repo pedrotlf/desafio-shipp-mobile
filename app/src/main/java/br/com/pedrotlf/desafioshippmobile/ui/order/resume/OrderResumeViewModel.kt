@@ -4,8 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import br.com.pedrotlf.desafioshippmobile.data.Order
-import br.com.pedrotlf.desafioshippmobile.data.OrderRepository
+import br.com.pedrotlf.desafioshippmobile.data.order.Order
+import br.com.pedrotlf.desafioshippmobile.data.order.OrderRepository
 import br.com.pedrotlf.desafioshippmobile.utils.DataState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn

@@ -1,4 +1,4 @@
-package br.com.pedrotlf.desafioshippmobile.data
+package br.com.pedrotlf.desafioshippmobile.data.order
 
 import br.com.pedrotlf.desafioshippmobile.api.OrderApi
 import br.com.pedrotlf.desafioshippmobile.api.OrderRequest

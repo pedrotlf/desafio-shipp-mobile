@@ -82,6 +82,9 @@ class OrderPriceFragment: Fragment(R.layout.fragment_order_price) {
                     progress = indeterminateProgressDialog(R.string.establishment_order_price_confirm_loading)
                     progress?.setCancelable(false)
                 }
+                null -> {
+                    //do nothing
+                }
             }.exhaustive
         })
     }

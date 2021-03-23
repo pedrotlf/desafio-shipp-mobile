@@ -13,7 +13,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import br.com.pedrotlf.desafioshippmobile.BuildConfig
 import br.com.pedrotlf.desafioshippmobile.R
-import br.com.pedrotlf.desafioshippmobile.data.Order
+import br.com.pedrotlf.desafioshippmobile.data.order.Order
 import br.com.pedrotlf.desafioshippmobile.data.Place
 import br.com.pedrotlf.desafioshippmobile.databinding.FragmentPlacesBinding
 import br.com.pedrotlf.desafioshippmobile.utils.BaseActivity

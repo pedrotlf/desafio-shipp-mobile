@@ -60,6 +60,10 @@ class OrderResumeFragment : Fragment(R.layout.fragment_order_resume) {
             btnNext.setOnClickListener {
                 orderViewModel.order?.let { fragViewModel.onNextClicked(it) }
             }
+            paymentCard.setOnClickListener {
+                val action = OrderResumeFragmentDirections.actionOrderResumeFragmentToCardsFragment()
+                findNavController().navigate(action)
+            }
         }
 
         subscribeObservers()
