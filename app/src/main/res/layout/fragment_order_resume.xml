@@ -72,9 +72,39 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/paymentLabel"
                         android:text="@string/establishment_order_resume_payment_method_placeholder"
-                        android:textColor="@color/gray"
+                        android:textColor="@color/yellow"
                         android:textStyle="bold"
                         android:layout_marginTop="8dp"/>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/cardSelectedLayout"
+                        android:visibility="invisible"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/paymentText"
+                        app:layout_constraintBottom_toBottomOf="@id/paymentText">
+                        <TextView
+                            android:id="@+id/cardNumber"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="•••• 1234"
+                            android:textColor="@color/black"
+                            android:textSize="16sp"
+                            android:layout_marginBottom="16dp"
+                            app:layout_goneMarginBottom="0dp"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"/>
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="0dp"
+                            android:layout_marginStart="15dp"
+                            app:layout_constraintBottom_toBottomOf="@id/cardNumber"
+                            app:layout_constraintStart_toEndOf="@id/cardNumber"
+                            app:layout_constraintTop_toTopOf="@id/cardNumber"
+                            app:srcCompat="@drawable/logo_mastercard" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <ImageView
                         android:layout_width="wrap_content"
@@ -85,7 +115,7 @@
                         app:layout_constraintTop_toTopOf="@id/paymentText"
                         app:srcCompat="@drawable/ic_next"
                         android:scaleType="centerCrop"
-                        app:tint="@color/gray" />
+                        app:tint="@color/yellow" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
 
@@ -112,6 +142,7 @@
         android:text="@string/establishment_order_resume_payment_btn_next"
         android:textColor="@color/black"
         android:textStyle="bold"
+        android:enabled="false"
         android:gravity="center"
         android:minWidth="160dp"
         android:padding="15dp"

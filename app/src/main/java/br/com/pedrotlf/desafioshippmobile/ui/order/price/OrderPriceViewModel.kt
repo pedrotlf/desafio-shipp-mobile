@@ -1,11 +1,13 @@
 package br.com.pedrotlf.desafioshippmobile.ui.order.price
 
 import androidx.lifecycle.*
-import br.com.pedrotlf.desafioshippmobile.data.Order
-import br.com.pedrotlf.desafioshippmobile.data.OrderRepository
+import br.com.pedrotlf.desafioshippmobile.data.card.CardDao
+import br.com.pedrotlf.desafioshippmobile.data.order.Order
+import br.com.pedrotlf.desafioshippmobile.data.order.OrderRepository
 import br.com.pedrotlf.desafioshippmobile.utils.DataState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
@@ -23,8 +25,8 @@ class OrderPriceViewModel @Inject constructor(
         object None : OrderPriceEvents()
     }
 
-    private val _validationState = MutableLiveData<DataState<Order>>()
-    val validationState: LiveData<DataState<Order>>
+    private val _validationState = MutableLiveData<DataState<Order>?>()
+    val validationState: LiveData<DataState<Order>?>
         get() = _validationState
 
     private fun setValidationState(event: OrderPriceEvents){
@@ -35,7 +37,12 @@ class OrderPriceViewModel @Inject constructor(
                         price = NumberFormat.getCurrencyInstance().parse(orderPrice.value?.toString() ?: "")?.toDouble()
                     }).onEach {
                         _validationState.value = it
+                    }.onCompletion {
+                        _validationState.value = null
                     }.launchIn(viewModelScope)
+                }
+                else -> {
+                    //do Nothing
                 }
             }
         }

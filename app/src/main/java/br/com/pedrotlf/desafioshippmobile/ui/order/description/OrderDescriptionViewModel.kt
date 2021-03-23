@@ -3,8 +3,7 @@ package br.com.pedrotlf.desafioshippmobile.ui.order.description
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import br.com.pedrotlf.desafioshippmobile.data.Order
-import br.com.pedrotlf.desafioshippmobile.data.Place
+import br.com.pedrotlf.desafioshippmobile.data.order.Order
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.channels.Channel

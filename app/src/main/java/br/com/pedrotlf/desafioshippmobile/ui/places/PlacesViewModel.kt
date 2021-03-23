@@ -6,8 +6,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import br.com.pedrotlf.desafioshippmobile.data.Order
-import br.com.pedrotlf.desafioshippmobile.data.Place
+import br.com.pedrotlf.desafioshippmobile.data.order.Order
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.model.*

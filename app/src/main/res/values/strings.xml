@@ -18,13 +18,31 @@
 
     <string name="establishment_order_resume_title">Confirmar pedido</string>
     <string name="establishment_order_resume_payment_method_label">Pagamento</string>
-    <string name="establishment_order_resume_payment_method_placeholder">A SER IMPLEMENTADO</string>
+    <string name="establishment_order_resume_payment_method_placeholder">Selecionar cartão</string>
     <string name="establishment_order_resume_payment_btn_next">Confirmar pedido</string>
     <string name="establishment_order_resume_loading">Confirmando pedido</string>
     <string name="establishment_order_resume_price_label">Valor: %1$s</string>
 
     <string name="establishment_order_success_title">Pedido confirmado!</string>
     <string name="establishment_order_success_btn_confirm">Ok</string>
+
+    <string name="cards_title">Cartões</string>
+    <string name="cards_list_label">Cartões de crédito</string>
+    <string name="cards_add_label">Novo cartão</string>
+    <string name="cards_add_text">Adicionar novo cartão</string>
+    <string name="cards_list_empty">Parece que você ainda não cadastrou uma forma de pagamento</string>
+
+    <string name="cards_addedit_title_add">Adicionar cartão</string>
+    <string name="cards_addedit_title_edit">Alterar cartão</string>
+    <string name="cards_addedit_btn_next_add">Adicionar</string>
+    <string name="cards_addedit_btn_next_edit">Atualizar</string>
+    <string name="cards_addedit_card_number_hint">Número do cartão</string>
+    <string name="cards_addedit_card_expiration_date_hint">Data de validade</string>
+    <string name="cards_addedit_card_cvv_hint">CVV</string>
+    <string name="cards_addedit_card_owner_name_hint">Nome do titular</string>
+    <string name="cards_addedit_card_owner_cpf_hint">CPF do titular</string>
+
+    <string name="card_number_text">•••• %1$s</string>
 
     <string name="unknown_error">Oops, algo deu errado</string>
 </resources>

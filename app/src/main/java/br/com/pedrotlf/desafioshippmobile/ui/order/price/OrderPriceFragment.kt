@@ -1,12 +1,14 @@
 package br.com.pedrotlf.desafioshippmobile.ui.order.price
 
 import android.app.ProgressDialog
+import android.content.Context
 import android.os.Bundle
 import android.view.View
+import android.view.inputmethod.InputMethodManager
+import androidx.core.content.ContextCompat.getSystemService
+import androidx.core.content.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import br.com.pedrotlf.desafioshippmobile.R
 import br.com.pedrotlf.desafioshippmobile.databinding.FragmentOrderPriceBinding
@@ -20,9 +22,9 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import org.jetbrains.anko.support.v4.indeterminateProgressDialog
 import org.jetbrains.anko.support.v4.toast
+
 
 @AndroidEntryPoint
 class OrderPriceFragment: Fragment(R.layout.fragment_order_price) {
@@ -45,7 +47,15 @@ class OrderPriceFragment: Fragment(R.layout.fragment_order_price) {
                 card.city.visibility = View.GONE
             Glide.with(requireContext().applicationContext)
                     .load(orderViewModel.orderEstablishmentPhoto)
-                    .apply(RequestOptions().transform(CenterCrop(), RoundedCorners(requireContext().dipFromPixels(5f))))
+                    .apply(
+                        RequestOptions().transform(
+                            CenterCrop(), RoundedCorners(
+                                requireContext().dipFromPixels(
+                                    5f
+                                )
+                            )
+                        )
+                    )
                     .into(card.image)
             card.description.visibility = View.VISIBLE
             card.description.text = orderViewModel.orderDetails
@@ -59,6 +69,8 @@ class OrderPriceFragment: Fragment(R.layout.fragment_order_price) {
 
             btnNext.setOnClickListener {
                 orderViewModel.order?.let { fragViewModel.onNextClicked(it) }
+                val imm: InputMethodManager? = requireActivity().getSystemService() as InputMethodManager?
+                imm?.hideSoftInputFromWindow(requireActivity().currentFocus?.windowToken, 0)
             }
         }
 
@@ -70,7 +82,10 @@ class OrderPriceFragment: Fragment(R.layout.fragment_order_price) {
             when (dataState) {
                 is DataState.Success -> {
                     progress?.dismiss()
-                    val action = OrderPriceFragmentDirections.actionOrderPriceFragmentToOrderResumeFragment(dataState.data)
+                    val action =
+                        OrderPriceFragmentDirections.actionOrderPriceFragmentToOrderResumeFragment(
+                            dataState.data
+                        )
                     findNavController().navigate(action)
                 }
                 is DataState.Error -> {
@@ -79,8 +94,12 @@ class OrderPriceFragment: Fragment(R.layout.fragment_order_price) {
                 }
 
                 DataState.Loading -> {
-                    progress = indeterminateProgressDialog(R.string.establishment_order_price_confirm_loading)
+                    progress =
+                        indeterminateProgressDialog(R.string.establishment_order_price_confirm_loading)
                     progress?.setCancelable(false)
+                }
+                null -> {
+                    //do nothing
                 }
             }.exhaustive
         })

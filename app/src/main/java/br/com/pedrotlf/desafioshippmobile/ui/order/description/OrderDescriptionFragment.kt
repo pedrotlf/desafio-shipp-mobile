@@ -56,11 +56,18 @@ class OrderDescriptionFragment: Fragment(R.layout.fragment_order_description) {
             })
         }
 
+        registerEventCollector()
+    }
+
+    private fun registerEventCollector() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            fragViewModel.orderDescriptionEvents.collect{
-                when(it){
+            fragViewModel.orderDescriptionEvents.collect {
+                when (it) {
                     is OrderDescriptionViewModel.OrderDescriptionEvents.NavigateToPrices -> {
-                        val action = OrderDescriptionFragmentDirections.actionOrderDescriptionFragmentToOrderPriceFragment(it.order)
+                        val action =
+                            OrderDescriptionFragmentDirections.actionOrderDescriptionFragmentToOrderPriceFragment(
+                                it.order
+                            )
                         findNavController().navigate(action)
                     }
                 }

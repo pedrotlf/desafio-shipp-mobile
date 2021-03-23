@@ -1,6 +1,7 @@
-package br.com.pedrotlf.desafioshippmobile.data
+package br.com.pedrotlf.desafioshippmobile.data.order
 
 import android.os.Parcelable
+import br.com.pedrotlf.desafioshippmobile.data.Place
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.android.parcel.Parcelize
 
