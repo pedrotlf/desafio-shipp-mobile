@@ -4,7 +4,8 @@ Simulação de fechamento de pedido em estabelecimento utilizando a *Places API*
 Link do desafio: https://bitbucket.org/zaittgroup/desafio-shipp-mobile/src/master/
 
 ## TO DO
-Ajustar os [bugs conhecidos](#bugs-conhecidos)
+* Ajustar os [bugs conhecidos](#bugs-conhecidos)
+* Separar o acesso à *Places API* da *viewModel* da tela inicial. Talvez injetando-o na *viewModel* de alguma forma com o uso do *Dagger*, assim como fizemos com o consumo da API disponibilizada pelo desafio.
 
 ## Recursos utilizados na Aplicação
 ### Arquiteturas
