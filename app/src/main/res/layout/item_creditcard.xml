@@ -8,8 +8,9 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/itemCard"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        app:layout_constraintWidth_max="390dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -46,7 +47,8 @@
                 app:layout_constraintTop_toBottomOf="@id/cardShip"
                 android:layout_marginTop="15dp"
                 android:textSize="22sp"
-                android:letterSpacing="1.2"
+                android:textColor="@color/black"
+                android:letterSpacing="0.1"
                 />
 
             <TextView
@@ -54,10 +56,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@id/cardNumber"
+                android:lines="1"
+                android:ellipsize="end"
                 android:textAllCaps="true"
                 android:layout_marginTop="8dp"
                 android:textSize="18sp"
-                android:letterSpacing="1.2"/>
+                android:textColor="@color/black"
+                android:letterSpacing="0.1"/>
 
             <TextView
                 android:id="@+id/cardExpirationDate"
@@ -65,7 +70,8 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@id/cardOwnerName"
                 android:textSize="18sp"
-                android:letterSpacing="1.2"/>
+                android:textColor="@color/black"
+                android:letterSpacing="0.2"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>

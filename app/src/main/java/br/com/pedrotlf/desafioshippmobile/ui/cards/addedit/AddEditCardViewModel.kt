@@ -17,25 +17,29 @@ class AddEditCardViewModel @Inject constructor(
         private val state: SavedStateHandle
 ): ViewModel() {
 
-    val cardNumber = MutableStateFlow("")
-    val cardExpirationDate = MutableStateFlow("")
+    val cardNumber = MutableStateFlow(Pair("", ""))
+    val cardExpirationDate = MutableStateFlow(Pair("", ""))
     val cardCvv = MutableStateFlow("")
     val cardOwnerName = MutableStateFlow("")
-    val cardOwnerCpf = MutableStateFlow("")
+    val cardOwnerCpf = MutableStateFlow(Pair("", ""))
 
-    private val _card = MutableStateFlow(Card())
-    private val cardFlow = combine(
+    private val _cardFormattedData = MutableStateFlow(Pair(Card(), Card()))
+    private val cardFormattedFlow = combine(
             cardNumber,
             cardExpirationDate,
             cardCvv,
             cardOwnerName,
             cardOwnerCpf
     ){ number, date, cvv, name, cpf ->
-        listOf(number, date, cvv, name, cpf)
-    }.flatMapLatest {
-        _card.value = Card(it[0], it[1], it[2], it[3], it[4])
-        _card
+        CardValues(number, date, cvv, name, cpf)
+    }.flatMapLatest { (number, date, cvv, name, cpf) ->
+        _cardFormattedData.value = Pair(
+            Card(number.first, date.first, cvv, name, cpf.first),
+            Card(number.second, date.second, cvv, name, cpf.second),
+        )
+        _cardFormattedData
     }
+    val cardFormatted = cardFormattedFlow.asLiveData()
 
-    val card = cardFlow.asLiveData()
+    data class CardValues<T1,T2,T3,T4,T5>(val t1: T1, val t2: T2, val t3: T3, val t4: T4, val t5: T5)
 }

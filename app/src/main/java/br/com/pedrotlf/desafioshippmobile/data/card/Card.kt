@@ -9,8 +9,8 @@ import kotlinx.android.parcel.Parcelize
 @Entity(tableName = "card_table")
 data class Card(
         val number: String = "1111111111111111",
-        val cvv: String = "111",
         val expirationDate: String = "12/30",
+        val cvv: String = "111",
         val ownerName: String = "",
         val ownerCpf: String = "",
         val selected: Boolean = false,
